@@ -11,7 +11,7 @@ import {
   Clock,
   Sparkles,
   Scissors,
-  Iron,
+  Flame,
   Check,
   Star,
   TriangleAlert,
@@ -109,7 +109,7 @@ const Services = () => {
     {
       id: 'ironing',
       name: 'Ironing & Pressing',
-      icon: <Iron className="h-8 w-8" />,
+      icon: <Flame className="h-8 w-8" />,
       description: 'Professional ironing and pressing service to give your clothes a crisp, wrinkle-free finish.',
       details: 'Our expert pressers use professional-grade equipment to ensure your garments are perfectly smoothed and ready to wear, saving you time and effort.',
       pricing: 'From $2.49/item',
