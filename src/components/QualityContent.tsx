@@ -17,7 +17,7 @@ export function QualityContent() {
     {
       icon: <ShieldCheck className="h-6 w-6" />,
       title: 'Quality Guarantee',
-      description: 'If you're not completely satisfied, we'll rewash or reclean your items at no additional cost.',
+      description: "If you're not completely satisfied, we'll rewash or reclean your items at no additional cost.",
     },
   ];
 
