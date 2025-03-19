@@ -55,7 +55,7 @@ export function Footer() {
               <FooterLink text="Pricing" to="/pricing" />
               <FooterLink text="FAQs" to="/faqs" />
               <FooterLink text="Track Order" to="/track" />
-              <FooterLink text="Blog" to="/blog" />
+              <FooterLink text="Contact Us" to="/contact" />
             </ul>
           </div>
 
