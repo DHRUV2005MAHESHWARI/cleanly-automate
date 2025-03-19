@@ -282,18 +282,18 @@ const Pricing = () => {
             {[
               {
                 icon: <ShieldCheck className="h-6 w-6" />,
-                title: 'Satisfaction Guarantee',
-                description: 'Not happy with our service? We'll rewash or reclean your items at no additional cost.',
+                title: "Satisfaction Guarantee",
+                description: "Not happy with our service? We'll rewash or reclean your items at no additional cost.",
               },
               {
                 icon: <DollarSign className="h-6 w-6" />,
-                title: 'No Hidden Fees',
-                description: 'What you see is what you pay. No surprise charges or additional fees.',
+                title: "No Hidden Fees",
+                description: "What you see is what you pay. No surprise charges or additional fees.",
               },
               {
                 icon: <Zap className="h-6 w-6" />,
-                title: 'Flexible Scheduling',
-                description: 'Schedule pickups and deliveries at times that work for your busy life.',
+                title: "Flexible Scheduling",
+                description: "Schedule pickups and deliveries at times that work for your busy life.",
               },
             ].map((benefit, i) => (
               <div key={i} className="text-center">
