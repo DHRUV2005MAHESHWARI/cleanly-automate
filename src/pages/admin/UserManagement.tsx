@@ -331,7 +331,7 @@ const UserManagement = () => {
           )}
         </SheetContent>
       </Sheet>
-    </SidebarInset>
+    </Layout>
   );
 };
 
