@@ -86,6 +86,20 @@ const StaffProfiles = ({ searchTerm }: StaffProfilesProps) => {
     setIsDialogOpen(true);
   };
 
+  // Helper function to determine badge variant based on status
+  const getBadgeVariant = (status: string) => {
+    switch (status) {
+      case "Active":
+        return "default";
+      case "On Leave":
+        return "secondary";
+      case "Inactive":
+        return "outline";
+      default:
+        return "secondary";
+    }
+  };
+
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -108,7 +122,7 @@ const StaffProfiles = ({ searchTerm }: StaffProfilesProps) => {
                       <p className="text-sm text-muted-foreground">{staff.role}</p>
                     </div>
                   </div>
-                  <Badge variant={staff.status === "Active" ? "default" : staff.status === "On Leave" ? "warning" : "secondary"}>
+                  <Badge variant={getBadgeVariant(staff.status)}>
                     {staff.status}
                   </Badge>
                 </div>
@@ -155,7 +169,7 @@ const StaffProfiles = ({ searchTerm }: StaffProfilesProps) => {
               </Avatar>
               <h2 className="text-xl font-semibold">{selectedStaff.name}</h2>
               <p className="text-muted-foreground">{selectedStaff.role}</p>
-              <Badge className="mt-2" variant={selectedStaff.status === "Active" ? "default" : selectedStaff.status === "On Leave" ? "warning" : "secondary"}>
+              <Badge className="mt-2" variant={getBadgeVariant(selectedStaff.status)}>
                 {selectedStaff.status}
               </Badge>
             </div>

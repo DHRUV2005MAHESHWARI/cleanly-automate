@@ -43,6 +43,20 @@ const TrainingCertifications = () => {
     { id: 5, title: "Customer Service Skills", description: "Improving customer service and handling complaints", duration: "2.5 hours", completion: 90 },
   ];
 
+  // Helper function to determine badge variant based on certification status
+  const getCertificationBadgeVariant = (status: string) => {
+    switch (status) {
+      case "Active":
+        return "default";
+      case "Expiring Soon":
+        return "secondary";
+      case "Expired":
+        return "destructive";
+      default:
+        return "secondary";
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -73,10 +87,7 @@ const TrainingCertifications = () => {
                     <TableCell>{new Date(cert.date).toLocaleDateString()}</TableCell>
                     <TableCell>{new Date(cert.expires).toLocaleDateString()}</TableCell>
                     <TableCell>
-                      <Badge variant={
-                        cert.status === "Active" ? "default" : 
-                        cert.status === "Expiring Soon" ? "warning" : "destructive"
-                      }>
+                      <Badge variant={getCertificationBadgeVariant(cert.status)}>
                         {cert.status}
                       </Badge>
                     </TableCell>
