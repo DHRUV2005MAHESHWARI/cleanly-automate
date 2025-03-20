@@ -8,8 +8,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { EyeIcon, EyeOffIcon, ShoppingBag, Mail, Lock } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, ShoppingBag, Mail, Lock, UserCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -17,6 +18,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({ email: '', password: '' });
+  const [userRole, setUserRole] = useState('user');
   const navigate = useNavigate();
 
   const validateForm = () => {
@@ -57,9 +59,17 @@ const Login = () => {
       setIsLoading(false);
       
       // Admin credentials for demo
-      if (email === 'admin@example.com' && password === 'admin123') {
+      if (userRole === 'admin' || (email === 'admin@example.com' && password === 'admin123')) {
         toast.success('Welcome back, Admin!');
         navigate('/admin');
+        return;
+      }
+      
+      // Staff role
+      if (userRole === 'staff') {
+        toast.success('Welcome back, Staff member!');
+        // In a real app, navigate to staff dashboard
+        navigate('/dashboard');
         return;
       }
       
@@ -152,6 +162,30 @@ const Login = () => {
                       <p className="text-red-500 text-xs mt-1">{errors.password}</p>
                     )}
                   </div>
+                  
+                  <div className="space-y-2">
+                    <Label>I am logging in as:</Label>
+                    <RadioGroup
+                      defaultValue="user"
+                      value={userRole}
+                      onValueChange={setUserRole}
+                      className="flex flex-col space-y-1"
+                    >
+                      <div className="flex items-center space-x-2 rounded-md border p-2">
+                        <RadioGroupItem value="user" id="user" />
+                        <Label htmlFor="user" className="flex-1 cursor-pointer">User</Label>
+                      </div>
+                      <div className="flex items-center space-x-2 rounded-md border p-2">
+                        <RadioGroupItem value="staff" id="staff" />
+                        <Label htmlFor="staff" className="flex-1 cursor-pointer">Staff</Label>
+                      </div>
+                      <div className="flex items-center space-x-2 rounded-md border p-2">
+                        <RadioGroupItem value="admin" id="admin" />
+                        <Label htmlFor="admin" className="flex-1 cursor-pointer">Admin</Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+                  
                   <Button
                     type="submit"
                     className="w-full btn-premium"
