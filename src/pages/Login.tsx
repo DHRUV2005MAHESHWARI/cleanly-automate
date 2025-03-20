@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
@@ -16,19 +16,57 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({ email: '', password: '' });
+  const navigate = useNavigate();
+
+  const validateForm = () => {
+    const newErrors = { email: '', password: '' };
+    let isValid = true;
+
+    if (!email) {
+      newErrors.email = 'Email is required';
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = 'Email is invalid';
+      isValid = false;
+    }
+
+    if (!password) {
+      newErrors.password = 'Password is required';
+      isValid = false;
+    } else if (password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+    
     setIsLoading(true);
     
-    // Simulate login
+    // Simulate login API call
     setTimeout(() => {
       setIsLoading(false);
       
+      // Admin credentials for demo
+      if (email === 'admin@example.com' && password === 'admin123') {
+        toast.success('Welcome back, Admin!');
+        navigate('/admin');
+        return;
+      }
+      
+      // Regular user login
       if (email && password) {
         toast.success('Successfully logged in!');
-        // Navigate to dashboard or home page
-        window.location.href = '/dashboard';
+        navigate('/dashboard');
       } else {
         toast.error('Please enter both email and password');
       }
@@ -68,10 +106,13 @@ const Login = () => {
                         placeholder="name@example.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="pl-9"
+                        className={`pl-9 ${errors.email ? 'border-red-500' : ''}`}
                         autoComplete="email"
                       />
                     </div>
+                    {errors.email && (
+                      <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
@@ -91,7 +132,7 @@ const Login = () => {
                         placeholder="••••••••"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="pl-9"
+                        className={`pl-9 ${errors.password ? 'border-red-500' : ''}`}
                         autoComplete="current-password"
                       />
                       <button
@@ -107,6 +148,9 @@ const Login = () => {
                         )}
                       </button>
                     </div>
+                    {errors.password && (
+                      <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+                    )}
                   </div>
                   <Button
                     type="submit"
@@ -158,6 +202,9 @@ const Login = () => {
                   >
                     Sign up
                   </Link>
+                </div>
+                <div className="text-center text-xs text-muted-foreground">
+                  <p>Admin demo - use email: admin@example.com / password: admin123</p>
                 </div>
               </CardFooter>
             </Card>
