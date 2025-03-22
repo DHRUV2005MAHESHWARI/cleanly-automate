@@ -1,47 +1,60 @@
 
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Award, Calendar, CheckCircle2 } from "lucide-react";
+import { Award, Calendar, CheckCircle2, AlertTriangle } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { Certification, Staff, TrainingModule } from "@/lib/types";
+import { toast } from "sonner";
 
 const TrainingCertifications = () => {
-  const certifications = [
-    { 
-      id: 1, 
-      name: "John Doe", 
-      certifications: [
-        { title: "Advanced Fabric Care", date: "2022-05-12", expires: "2024-05-12", status: "Active" },
-        { title: "Workplace Safety", date: "2022-02-08", expires: "2024-02-08", status: "Active" },
-        { title: "Customer Service Excellence", date: "2021-11-15", expires: "2023-11-15", status: "Expiring Soon" }
-      ]
-    },
-    { 
-      id: 2, 
-      name: "Jane Smith", 
-      certifications: [
-        { title: "Eco-Friendly Cleaning Practices", date: "2022-07-20", expires: "2024-07-20", status: "Active" },
-        { title: "Stain Removal Specialist", date: "2023-01-10", expires: "2025-01-10", status: "Active" },
-        { title: "Workplace Safety", date: "2022-03-15", expires: "2024-03-15", status: "Active" }
-      ]
-    },
-    { 
-      id: 3, 
-      name: "Robert Johnson", 
-      certifications: [
-        { title: "Industrial Pressing Techniques", date: "2022-04-05", expires: "2024-04-05", status: "Active" },
-        { title: "Workplace Safety", date: "2021-09-30", expires: "2023-09-30", status: "Expired" }
-      ]
-    }
-  ];
+  const [certifications, setCertifications] = useState<(Certification & { staff_name: string })[]>([]);
+  const [trainingModules, setTrainingModules] = useState<TrainingModule[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const trainingModules = [
-    { id: 1, title: "Delicate Fabric Handling", description: "Learn how to handle and clean delicate fabrics", duration: "2 hours", completion: 80 },
-    { id: 2, title: "Commercial Laundry Equipment", description: "Operating and maintaining commercial laundry equipment", duration: "4 hours", completion: 100 },
-    { id: 3, title: "Stain Removal Techniques", description: "Advanced techniques for removing difficult stains", duration: "3 hours", completion: 60 },
-    { id: 4, title: "Eco-Friendly Practices", description: "Implementing environmentally friendly laundry practices", duration: "2 hours", completion: 40 },
-    { id: 5, title: "Customer Service Skills", description: "Improving customer service and handling complaints", duration: "2.5 hours", completion: 90 },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // Fetch certifications with staff names
+        const { data: certData, error: certError } = await supabase
+          .from('certifications')
+          .select(`
+            *,
+            staff:staff_id(name)
+          `)
+          .order('expires');
+
+        if (certError) throw certError;
+
+        // Format certifications with staff names
+        const formattedCerts = certData.map(cert => ({
+          ...cert,
+          staff_name: cert.staff?.name || 'Unknown'
+        }));
+
+        // Fetch training modules
+        const { data: trainingData, error: trainingError } = await supabase
+          .from('training_modules')
+          .select('*')
+          .order('id');
+
+        if (trainingError) throw trainingError;
+
+        setCertifications(formattedCerts);
+        setTrainingModules(trainingData || []);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        toast.error('Failed to load training and certification data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   // Helper function to determine badge variant based on certification status
   const getCertificationBadgeVariant = (status: string) => {
@@ -57,45 +70,79 @@ const TrainingCertifications = () => {
     }
   };
 
+  // Group certifications by staff member for display
+  const groupedCertifications = certifications.reduce((acc, cert) => {
+    const staffName = cert.staff_name;
+    if (!acc[staffName]) {
+      acc[staffName] = [];
+    }
+    acc[staffName].push(cert);
+    return acc;
+  }, {} as Record<string, typeof certifications>);
+
+  // Convert the grouped object back to an array for rendering
+  const staffCertifications = Object.entries(groupedCertifications).map(([name, certs]) => ({
+    name,
+    certifications: certs
+  }));
+
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Staff Certifications</CardTitle>
+          <CardTitle className="flex items-center">
+            Staff Certifications
+            {loading && <span className="ml-2 text-sm text-muted-foreground">(Loading...)</span>}
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Staff Member</TableHead>
-                <TableHead>Certification</TableHead>
-                <TableHead>Issue Date</TableHead>
-                <TableHead>Expiry Date</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {certifications.flatMap(staff => 
-                staff.certifications.map((cert, certIndex) => (
-                  <TableRow key={`${staff.id}-${certIndex}`}>
-                    {certIndex === 0 && (
-                      <TableCell className="font-medium" rowSpan={staff.certifications.length}>
-                        {staff.name}
+          {loading ? (
+            <div className="flex justify-center py-8">
+              <div className="animate-pulse flex flex-col items-center">
+                <div className="h-8 w-8 bg-primary/20 rounded-full mb-4"></div>
+                <div className="h-4 w-32 bg-primary/20 rounded mb-2"></div>
+                <div className="h-3 w-24 bg-primary/10 rounded"></div>
+              </div>
+            </div>
+          ) : certifications.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <AlertTriangle className="mx-auto h-8 w-8 mb-2 text-yellow-500" />
+              <p>No certification records found</p>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Staff Member</TableHead>
+                  <TableHead>Certification</TableHead>
+                  <TableHead>Issue Date</TableHead>
+                  <TableHead>Expiry Date</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {staffCertifications.flatMap(staff => 
+                  staff.certifications.map((cert, certIndex) => (
+                    <TableRow key={`${cert.id}-${certIndex}`}>
+                      {certIndex === 0 && (
+                        <TableCell className="font-medium" rowSpan={staff.certifications.length}>
+                          {staff.name}
+                        </TableCell>
+                      )}
+                      <TableCell>{cert.title}</TableCell>
+                      <TableCell>{new Date(cert.date).toLocaleDateString()}</TableCell>
+                      <TableCell>{new Date(cert.expires).toLocaleDateString()}</TableCell>
+                      <TableCell>
+                        <Badge variant={getCertificationBadgeVariant(cert.status)}>
+                          {cert.status}
+                        </Badge>
                       </TableCell>
-                    )}
-                    <TableCell>{cert.title}</TableCell>
-                    <TableCell>{new Date(cert.date).toLocaleDateString()}</TableCell>
-                    <TableCell>{new Date(cert.expires).toLocaleDateString()}</TableCell>
-                    <TableCell>
-                      <Badge variant={getCertificationBadgeVariant(cert.status)}>
-                        {cert.status}
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
 
@@ -104,44 +151,59 @@ const TrainingCertifications = () => {
           <CardTitle>Training Modules</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {trainingModules.map(module => (
-              <div key={module.id} className="border rounded-lg p-4">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <h3 className="font-medium flex items-center">
-                      <Award className="h-4 w-4 mr-2 text-primary" />
-                      {module.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground mt-1">{module.description}</p>
-                  </div>
-                  <div className="flex items-center">
-                    <Calendar className="h-4 w-4 mr-1 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">{module.duration}</span>
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-sm font-medium">Completion</span>
-                    <span className="text-sm font-medium">{module.completion}%</span>
-                  </div>
-                  <Progress value={module.completion} className="h-2" />
-                </div>
-                <div className="mt-2 flex justify-end">
-                  {module.completion === 100 ? (
-                    <Badge variant="outline" className="bg-green-500/10 text-green-700 flex items-center">
-                      <CheckCircle2 className="h-3 w-3 mr-1" />
-                      Completed
-                    </Badge>
-                  ) : (
-                    <Badge variant="outline" className="bg-blue-500/10 text-blue-700">
-                      In Progress
-                    </Badge>
-                  )}
-                </div>
+          {loading ? (
+            <div className="flex justify-center py-8">
+              <div className="animate-pulse flex flex-col items-center">
+                <div className="h-8 w-8 bg-primary/20 rounded-full mb-4"></div>
+                <div className="h-4 w-32 bg-primary/20 rounded mb-2"></div>
+                <div className="h-3 w-24 bg-primary/10 rounded"></div>
               </div>
-            ))}
-          </div>
+            </div>
+          ) : trainingModules.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <AlertTriangle className="mx-auto h-8 w-8 mb-2 text-yellow-500" />
+              <p>No training modules found</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {trainingModules.map(module => (
+                <div key={module.id} className="border rounded-lg p-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h3 className="font-medium flex items-center">
+                        <Award className="h-4 w-4 mr-2 text-primary" />
+                        {module.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground mt-1">{module.description}</p>
+                    </div>
+                    <div className="flex items-center">
+                      <Calendar className="h-4 w-4 mr-1 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">{module.duration}</span>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-sm font-medium">Completion</span>
+                      <span className="text-sm font-medium">{module.completion}%</span>
+                    </div>
+                    <Progress value={module.completion} className="h-2" />
+                  </div>
+                  <div className="mt-2 flex justify-end">
+                    {module.completion === 100 ? (
+                      <Badge variant="outline" className="bg-green-500/10 text-green-700 flex items-center">
+                        <CheckCircle2 className="h-3 w-3 mr-1" />
+                        Completed
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="bg-blue-500/10 text-blue-700">
+                        In Progress
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
