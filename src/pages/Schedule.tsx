@@ -42,10 +42,27 @@ const Schedule = () => {
       toast.error('Please select a pickup time');
       return;
     }
+
+    if (!formData.name || !formData.phone || !formData.email || !formData.address) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
     
     // Here you would send the data to your backend/Supabase
-    toast.success('Your service has been scheduled!');
+    toast.success('Your pickup has been scheduled successfully!');
     console.log({ ...formData, date });
+    
+    // Reset form after successful submission
+    setDate(undefined);
+    setFormData({
+      name: '',
+      phone: '',
+      email: '',
+      address: '',
+      serviceType: 'standard',
+      time: '',
+      notes: '',
+    });
   };
   
   return (
@@ -121,6 +138,7 @@ const Schedule = () => {
                     <Label>Service Type</Label>
                     <RadioGroup 
                       defaultValue="standard" 
+                      value={formData.serviceType}
                       onValueChange={(value) => setFormData(prev => ({ ...prev, serviceType: value }))}
                       className="grid grid-cols-1 md:grid-cols-3 gap-4"
                     >
@@ -176,7 +194,10 @@ const Schedule = () => {
                     
                     <div className="space-y-2">
                       <Label>Pickup Time</Label>
-                      <Select onValueChange={(value) => setFormData(prev => ({ ...prev, time: value }))}>
+                      <Select 
+                        value={formData.time} 
+                        onValueChange={(value) => setFormData(prev => ({ ...prev, time: value }))}
+                      >
                         <SelectTrigger className="w-full">
                           <div className="flex items-center">
                             <Clock className="mr-2 h-4 w-4 text-muted-foreground" />
