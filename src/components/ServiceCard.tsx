@@ -30,7 +30,7 @@ export function ServiceCard({ title, description, icon, price, link, index }: Se
       <h3 className="text-xl font-semibold mb-2">{title}</h3>
       <p className="text-muted-foreground text-sm mb-4 flex-grow">{description}</p>
       <Button asChild variant="ghost" className="justify-start p-0 hover:bg-transparent">
-        <Link to={link} className="flex items-center text-primary font-medium">
+        <Link to={`/services/${link}`} className="flex items-center text-primary font-medium">
           Learn more <ArrowRight className="ml-2 h-4 w-4" />
         </Link>
       </Button>

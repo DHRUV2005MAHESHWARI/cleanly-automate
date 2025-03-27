@@ -271,7 +271,7 @@ const Services = () => {
                           </div>
                           
                           <Button asChild className="btn-premium">
-                            <Link to={`/order?service=${service.id}`}>Schedule this Service</Link>
+                            <Link to={`/services/${service.id}`}>Schedule this Service</Link>
                           </Button>
                         </div>
                         

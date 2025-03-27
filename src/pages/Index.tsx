@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -29,7 +28,6 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Animation for gradual page reveal
     const timer = setTimeout(() => {
       const sections = document.querySelectorAll('.animate-section');
       sections.forEach((section) => {
@@ -45,47 +43,43 @@ const Index = () => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate tracking order
     setTimeout(() => {
       setIsLoading(false);
-      // Navigate to tracking page with the order ID
       window.location.href = `/track?id=${order}`;
     }, 1000);
   };
 
-  // Services data
   const services = [
     {
       title: 'Wash & Fold',
       description: 'Regular everyday laundry, washed, dried, and neatly folded.',
       icon: <Shirt className="h-6 w-6" />,
       price: 'From $1.99/lb',
-      link: '/services/wash-fold',
+      link: 'wash-fold',
     },
     {
       title: 'Dry Cleaning',
       description: 'Professional cleaning for your delicate and special garments.',
       icon: <ShoppingBag className="h-6 w-6" />,
       price: 'From $5.99/item',
-      link: '/services/dry-cleaning',
+      link: 'dry-cleaning',
     },
     {
       title: 'Express Service',
       description: 'Same-day service when you need your clothes cleaned fast.',
       icon: <Clock className="h-6 w-6" />,
       price: '+50% charge',
-      link: '/services/express',
+      link: 'express',
     },
     {
       title: 'Stain Removal',
       description: 'Specialized treatment to remove tough stains from your fabrics.',
       icon: <Sparkles className="h-6 w-6" />,
       price: 'From $3.99/stain',
-      link: '/services/stain-removal',
+      link: 'stain-removal',
     },
   ];
 
-  // Process steps
   const processSteps = [
     {
       number: 1,
@@ -113,7 +107,6 @@ const Index = () => {
     },
   ];
 
-  // Testimonials
   const testimonials = [
     {
       name: 'Sarah Johnson',
@@ -140,7 +133,6 @@ const Index = () => {
 
   return (
     <Layout>
-      {/* Hero Section */}
       <section className="pt-20 pb-16 lg:pt-28 lg:pb-24 overflow-hidden">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -184,7 +176,6 @@ const Index = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                 
-                {/* Floating card */}
                 <div className="absolute bottom-6 left-6 right-6 glass-card rounded-lg p-4 backdrop-blur-lg">
                   <div className="flex items-center space-x-4">
                     <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
@@ -198,7 +189,6 @@ const Index = () => {
                 </div>
               </div>
               
-              {/* Stats cards */}
               <div className="absolute -bottom-10 -right-10 glass-card rounded-lg p-4 shadow-lg hidden lg:block">
                 <div className="grid grid-cols-2 gap-3">
                   <div className="text-center">
@@ -216,7 +206,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Track Order Section */}
       <section className="py-16 bg-secondary">
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-md mx-auto">
@@ -240,7 +229,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Services Section */}
       <section className="py-20 animate-section opacity-0 translate-y-10 transition-all duration-700">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center max-w-2xl mx-auto mb-12">
@@ -267,7 +255,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* How It Works Section */}
       <section className="py-20 bg-secondary animate-section opacity-0 translate-y-10 transition-all duration-700">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center max-w-2xl mx-auto mb-12">
@@ -287,7 +274,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Mobile App Section */}
       <section className="py-20 animate-section opacity-0 translate-y-10 transition-all duration-700">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -352,7 +338,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Pricing Section */}
       <section className="py-20 bg-secondary animate-section opacity-0 translate-y-10 transition-all duration-700">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center max-w-2xl mx-auto mb-12">
@@ -497,7 +482,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
       <section className="py-20 animate-section opacity-0 translate-y-10 transition-all duration-700">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center max-w-2xl mx-auto mb-12">
@@ -515,7 +499,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-20 bg-primary text-white animate-section opacity-0 translate-y-10 transition-all duration-700">
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-3xl mx-auto text-center">
