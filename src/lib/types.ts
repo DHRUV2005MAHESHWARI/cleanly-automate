@@ -69,3 +69,17 @@ export interface ShiftSchedule {
   staff_ids: number[];
   created_at?: string;
 }
+
+export interface Pickup {
+  id?: number;
+  name: string;
+  phone: string;
+  email: string;
+  address: string;
+  serviceType: string;
+  pickup_date: string;
+  time: string;
+  notes?: string;
+  status?: 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled';
+  created_at?: string;
+}

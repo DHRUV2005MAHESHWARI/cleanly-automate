@@ -78,6 +78,21 @@ CREATE TABLE shift_schedules (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Pickup schedule
+CREATE TABLE pickups (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  email TEXT NOT NULL,
+  address TEXT NOT NULL,
+  serviceType TEXT NOT NULL,
+  pickup_date DATE NOT NULL,
+  time TEXT NOT NULL,
+  notes TEXT,
+  status TEXT CHECK (status IN ('Pending', 'Confirmed', 'Completed', 'Cancelled')) DEFAULT 'Pending',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Sample data: Staff
 INSERT INTO staff (name, role, email, phone, image, status)
 VALUES 
@@ -104,3 +119,10 @@ VALUES
   ('Stain Removal Techniques', 'Advanced techniques for removing difficult stains', '3 hours', 60),
   ('Eco-Friendly Practices', 'Implementing environmentally friendly laundry practices', '2 hours', 40),
   ('Customer Service Skills', 'Improving customer service and handling complaints', '2.5 hours', 90);
+
+-- Sample data: Pickups
+INSERT INTO pickups (name, phone, email, address, serviceType, pickup_date, time, notes, status)
+VALUES
+  ('Alice Johnson', '(555) 987-6543', 'alice@example.com', '123 Main St, Anytown', 'standard', '2023-11-15', '13:00', 'Ring bell twice', 'Completed'),
+  ('Bob Williams', '(555) 456-7890', 'bob@example.com', '456 Oak Ave, Somewhere', 'express', '2023-11-17', '10:00', 'Heavy items included', 'Completed'),
+  ('Carol Brown', '(555) 321-6547', 'carol@example.com', '789 Pine Rd, Nowhere', 'premium', '2023-11-20', '14:00', 'Fragile clothes', 'Confirmed');

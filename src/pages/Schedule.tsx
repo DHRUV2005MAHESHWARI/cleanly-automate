@@ -12,9 +12,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Calendar as CalendarIcon, Clock, Package, Shirt, MapPin } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+import { supabase } from '@/lib/supabase';
 
 const Schedule = () => {
   const [date, setDate] = useState<Date | undefined>(undefined);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -30,7 +32,25 @@ const Schedule = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const savePickupToDatabase = async (pickupData: any) => {
+    try {
+      const { data, error } = await supabase
+        .from('pickups')
+        .insert([pickupData]);
+        
+      if (error) {
+        console.error('Error saving pickup:', error);
+        throw new Error(error.message);
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Error in savePickupToDatabase:', error);
+      throw error;
+    }
+  };
+  
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!date) {
@@ -48,21 +68,38 @@ const Schedule = () => {
       return;
     }
     
-    // Here you would send the data to your backend/Supabase
-    toast.success('Your pickup has been scheduled successfully!');
-    console.log({ ...formData, date });
-    
-    // Reset form after successful submission
-    setDate(undefined);
-    setFormData({
-      name: '',
-      phone: '',
-      email: '',
-      address: '',
-      serviceType: 'standard',
-      time: '',
-      notes: '',
-    });
+    try {
+      setIsSubmitting(true);
+      
+      // Format the date to ISO string for database storage
+      const pickupData = {
+        ...formData,
+        pickup_date: date.toISOString().split('T')[0],
+        created_at: new Date().toISOString(),
+        status: 'Pending'
+      };
+      
+      await savePickupToDatabase(pickupData);
+      
+      toast.success('Your pickup has been scheduled successfully!');
+      console.log('Saved pickup data:', pickupData);
+      
+      // Reset form after successful submission
+      setDate(undefined);
+      setFormData({
+        name: '',
+        phone: '',
+        email: '',
+        address: '',
+        serviceType: 'standard',
+        time: '',
+        notes: '',
+      });
+    } catch (error) {
+      toast.error('Failed to schedule pickup. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   
   return (
@@ -227,8 +264,12 @@ const Schedule = () => {
                     />
                   </div>
                   
-                  <Button type="submit" className="w-full btn-premium">
-                    Schedule Pickup
+                  <Button 
+                    type="submit" 
+                    className="w-full btn-premium"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Scheduling...' : 'Schedule Pickup'}
                   </Button>
                 </form>
               </CardContent>
