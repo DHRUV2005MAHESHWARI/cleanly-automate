@@ -4,6 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { MapPin, Navigation, Truck } from 'lucide-react';
 
+// Import the type declaration
+import '../types/google-maps.d.ts';
+
 const DeliveryMap = ({ orderId }: { orderId: string }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [locationPermission, setLocationPermission] = useState<boolean>(false);
@@ -78,9 +81,6 @@ const DeliveryMap = ({ orderId }: { orderId: string }) => {
     
     // Simulate driver movement
     const interval = setInterval(() => {
-      const newLat = driverLocation.lat + (Math.random() * 0.002 - 0.001);
-      const newLng = driverLocation.lng + (Math.random() * 0.002 - 0.001);
-      
       // Move driver closer to delivery location
       const newDriverLocation = {
         lat: driverLocation.lat + (deliveryLocation.lat - driverLocation.lat) * 0.05,
