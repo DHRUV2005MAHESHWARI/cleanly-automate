@@ -4,8 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { MapPin, Navigation, Truck } from 'lucide-react';
 
-// Import the type declaration
-import '../types/google-maps.d.ts';
+// Make sure we have the correct type definitions for Google Maps
+// No need to import the .d.ts file directly
 
 const DeliveryMap = ({ orderId }: { orderId: string }) => {
   const mapRef = useRef<HTMLDivElement>(null);
