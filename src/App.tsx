@@ -16,6 +16,7 @@ import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/Admin";
 import UserManagement from "./pages/admin/UserManagement";
 import StaffManagement from "./pages/StaffManagement";
+import Schedule from "./pages/Schedule";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +40,7 @@ const App = () => (
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/users" element={<UserManagement />} />
             <Route path="/staff" element={<StaffManagement />} />
+            <Route path="/schedule" element={<Schedule />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

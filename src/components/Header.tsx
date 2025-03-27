@@ -2,7 +2,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Menu, X, User, ShoppingBag } from 'lucide-react';
+import { Menu, X, User, ShoppingBag, Sun, Moon, Monitor } from 'lucide-react';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -21,7 +22,7 @@ export function Header() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${
         isScrolled
-          ? 'py-3 bg-white/90 backdrop-blur-md shadow-sm'
+          ? 'py-3 bg-white/90 dark:bg-background/90 backdrop-blur-md shadow-sm'
           : 'py-5 bg-transparent'
       }`}
     >
@@ -39,6 +40,10 @@ export function Header() {
           <nav className="hidden md:flex items-center space-x-8">
             <NavLinks />
             <div className="flex items-center space-x-4">
+              {/* Theme toggle positioned in the navbar on desktop */}
+              <div className="hidden md:block">
+                <ThemeToggle />
+              </div>
               <Button variant="outline" asChild className="smooth-transition">
                 <Link to="/login">
                   <User className="mr-1.5 h-4 w-4" />
@@ -72,13 +77,17 @@ export function Header() {
           isMobileMenuOpen
             ? 'translate-x-0 opacity-100'
             : 'translate-x-full opacity-0'
-        } transition-all duration-300 ease-in-out pt-20 bg-white`}
+        } transition-all duration-300 ease-in-out pt-20 bg-white dark:bg-background`}
       >
         <div className="container h-full flex flex-col px-4">
           <nav className="py-8 flex flex-col space-y-8 text-center">
             <NavLinks isMobile onClick={() => setIsMobileMenuOpen(false)} />
           </nav>
           <div className="mt-auto pb-8 flex flex-col space-y-4">
+            {/* Mobile theme toggle */}
+            <div className="flex justify-center mb-4">
+              <ThemeToggle />
+            </div>
             <Button variant="outline" asChild className="w-full">
               <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>Sign In</Link>
             </Button>
@@ -105,6 +114,7 @@ const NavLinks = ({
     { name: 'Pricing', path: '/pricing' },
     { name: 'Track Order', path: '/track' },
     { name: 'Contact', path: '/contact' },
+    { name: 'Schedule', path: '/schedule' },
   ];
 
   return (

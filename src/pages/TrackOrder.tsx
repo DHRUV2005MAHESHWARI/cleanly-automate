@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Search, CheckCircle, Clock, Loader2, TruckIcon, Package, Shirt } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import DeliveryMap from '@/components/tracking/DeliveryMap';
 
 const TrackOrder = () => {
   const location = useLocation();
@@ -155,96 +156,102 @@ const TrackOrder = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                  <Card className="glass-card">
-                    <CardContent className="pt-6">
-                      <div className="flex justify-between items-start flex-wrap gap-4 mb-6">
-                        <div>
-                          <div className="text-sm text-muted-foreground mb-1">Order ID</div>
-                          <div className="font-semibold">{trackingData.orderId}</div>
-                        </div>
-                        <div>
-                          <div className="flex items-center">
-                            <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                              {trackingData.status === 'pending' && 'Pending'}
-                              {trackingData.status === 'pickedUp' && 'Picked Up'}
-                              {trackingData.status === 'processing' && 'Processing'}
-                              {trackingData.status === 'readyForDelivery' && 'Ready for Delivery'}
-                              {trackingData.status === 'outForDelivery' && 'Out for Delivery'}
-                              {trackingData.status === 'delivered' && 'Delivered'}
+                  <div className="grid grid-cols-1 gap-8">
+                    {/* Map for tracking delivery */}
+                    <DeliveryMap orderId={trackingData.orderId} />
+                    
+                    {/* Order details */}
+                    <Card className="glass-card">
+                      <CardContent className="pt-6">
+                        <div className="flex justify-between items-start flex-wrap gap-4 mb-6">
+                          <div>
+                            <div className="text-sm text-muted-foreground mb-1">Order ID</div>
+                            <div className="font-semibold">{trackingData.orderId}</div>
+                          </div>
+                          <div>
+                            <div className="flex items-center">
+                              <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                                {trackingData.status === 'pending' && 'Pending'}
+                                {trackingData.status === 'pickedUp' && 'Picked Up'}
+                                {trackingData.status === 'processing' && 'Processing'}
+                                {trackingData.status === 'readyForDelivery' && 'Ready for Delivery'}
+                                {trackingData.status === 'outForDelivery' && 'Out for Delivery'}
+                                {trackingData.status === 'delivered' && 'Delivered'}
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div>
-                          <div className="text-sm text-muted-foreground mb-1">Customer</div>
-                          <div className="font-medium">{trackingData.customerName}</div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                          <div>
+                            <div className="text-sm text-muted-foreground mb-1">Customer</div>
+                            <div className="font-medium">{trackingData.customerName}</div>
+                          </div>
+                          <div>
+                            <div className="text-sm text-muted-foreground mb-1">Items</div>
+                            <div className="font-medium">{trackingData.items} pieces</div>
+                          </div>
+                          <div>
+                            <div className="text-sm text-muted-foreground mb-1">Order Date</div>
+                            <div className="font-medium">{trackingData.orderDate}</div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="text-sm text-muted-foreground mb-1">Items</div>
-                          <div className="font-medium">{trackingData.items} pieces</div>
-                        </div>
-                        <div>
-                          <div className="text-sm text-muted-foreground mb-1">Order Date</div>
-                          <div className="font-medium">{trackingData.orderDate}</div>
-                        </div>
-                      </div>
 
-                      <div className="mb-6">
-                        <div className="flex justify-between items-center mb-4">
-                          <h3 className="font-semibold">Estimated Delivery</h3>
-                          <div className="font-medium text-primary">{trackingData.estimatedDelivery}</div>
+                        <div className="mb-6">
+                          <div className="flex justify-between items-center mb-4">
+                            <h3 className="font-semibold">Estimated Delivery</h3>
+                            <div className="font-medium text-primary">{trackingData.estimatedDelivery}</div>
+                          </div>
+                          <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-primary rounded-full" 
+                              style={{ 
+                                width: `${(trackingData.steps.filter(step => step.status === 'completed').length / trackingData.steps.length) * 100}%`
+                              }}
+                            ></div>
+                          </div>
                         </div>
-                        <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-primary rounded-full" 
-                            style={{ 
-                              width: `${(trackingData.steps.filter(step => step.status === 'completed').length / trackingData.steps.length) * 100}%`
-                            }}
-                          ></div>
-                        </div>
-                      </div>
 
-                      <Separator className="my-6" />
+                        <Separator className="my-6" />
 
-                      <div className="space-y-6">
-                        <h3 className="font-semibold">Order Timeline</h3>
-                        
-                        <div className="relative">
-                          {/* Vertical line */}
-                          <div className="absolute top-0 left-6 h-full w-0.5 bg-secondary -ml-[1px]"></div>
+                        <div className="space-y-6">
+                          <h3 className="font-semibold">Order Timeline</h3>
                           
-                          {trackingData.steps.map((step, index) => (
-                            <div key={index} className="flex items-start mb-8 relative">
-                              <div className={`h-12 w-12 rounded-full flex items-center justify-center z-10 mr-4 ${
-                                step.status === 'completed' 
-                                  ? 'bg-primary text-white' 
-                                  : step.status === 'current'
-                                  ? 'bg-primary/20 text-primary border-2 border-primary animate-pulse'
-                                  : 'bg-secondary text-muted-foreground'
-                              }`}>
-                                {step.status === 'current' ? (
-                                  <Clock className="h-5 w-5" />
-                                ) : (
-                                  step.icon
-                                )}
+                          <div className="relative">
+                            {/* Vertical line */}
+                            <div className="absolute top-0 left-6 h-full w-0.5 bg-secondary -ml-[1px]"></div>
+                            
+                            {trackingData.steps.map((step, index) => (
+                              <div key={index} className="flex items-start mb-8 relative">
+                                <div className={`h-12 w-12 rounded-full flex items-center justify-center z-10 mr-4 ${
+                                  step.status === 'completed' 
+                                    ? 'bg-primary text-white' 
+                                    : step.status === 'current'
+                                    ? 'bg-primary/20 text-primary border-2 border-primary animate-pulse'
+                                    : 'bg-secondary text-muted-foreground'
+                                }`}>
+                                  {step.status === 'current' ? (
+                                    <Clock className="h-5 w-5" />
+                                  ) : (
+                                    step.icon
+                                  )}
+                                </div>
+                                <div className="flex-1">
+                                  <h4 className="font-medium text-base">{step.name}</h4>
+                                  {step.time && (
+                                    <p className="text-sm text-muted-foreground">{step.time}</p>
+                                  )}
+                                  {step.status === 'current' && (
+                                    <div className="text-sm text-primary mt-1">In progress</div>
+                                  )}
+                                </div>
                               </div>
-                              <div className="flex-1">
-                                <h4 className="font-medium text-base">{step.name}</h4>
-                                {step.time && (
-                                  <p className="text-sm text-muted-foreground">{step.time}</p>
-                                )}
-                                {step.status === 'current' && (
-                                  <div className="text-sm text-primary mt-1">In progress</div>
-                                )}
-                              </div>
-                            </div>
-                          ))}
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </motion.div>
               ) : (
                 orderIdInput && <p className="text-center text-muted-foreground py-6">No order found. Please check your order ID and try again.</p>

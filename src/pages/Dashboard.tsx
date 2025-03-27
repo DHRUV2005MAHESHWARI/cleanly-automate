@@ -4,13 +4,31 @@ import DashboardMetrics from "@/components/dashboard/DashboardMetrics";
 import RecentOrders from "@/components/dashboard/RecentOrders";
 import PendingPickups from "@/components/dashboard/PendingPickups";
 import CustomerSummary from "@/components/dashboard/CustomerSummary";
+import InventoryManagement from "@/components/admin/InventoryManagement";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   return (
     <Layout>
       <div className="container mx-auto py-8 px-4">
-        <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+          
+          <div className="flex space-x-2">
+            <Button asChild variant="outline">
+              <Link to="/schedule">
+                Schedule Service
+              </Link>
+            </Button>
+            <Button asChild>
+              <Link to="/track">
+                Track Order
+              </Link>
+            </Button>
+          </div>
+        </div>
         
         {/* Dashboard Overview */}
         <DashboardMetrics />
@@ -38,10 +56,7 @@ const Dashboard = () => {
             </TabsContent>
             
             <TabsContent value="inventory" className="space-y-6">
-              <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
-                <h3 className="text-lg font-semibold mb-4">Inventory Management</h3>
-                <p className="text-muted-foreground">Inventory management functionality will be implemented here.</p>
-              </div>
+              <InventoryManagement />
             </TabsContent>
           </Tabs>
         </div>

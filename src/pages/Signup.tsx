@@ -9,7 +9,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Checkbox } from '@/components/ui/checkbox';
-import { EyeIcon, EyeOffIcon, ShoppingBag, Mail, Lock, User, Phone } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { EyeIcon, EyeOffIcon, ShoppingBag, Mail, Lock, User, Phone, UserCircle, Users, Shield } from 'lucide-react';
 import { toast } from 'sonner';
 
 const Signup = () => {
@@ -20,6 +21,7 @@ const Signup = () => {
     phone: '',
     password: '',
     confirmPassword: '',
+    role: 'customer', // Default role
   });
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -29,6 +31,10 @@ const Signup = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+  
+  const handleRoleChange = (value: string) => {
+    setFormData((prev) => ({ ...prev, role: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -50,8 +56,20 @@ const Signup = () => {
     setTimeout(() => {
       setIsLoading(false);
       toast.success('Account created successfully!');
-      // Navigate to dashboard
-      window.location.href = '/dashboard';
+      
+      // Redirect based on role
+      switch(formData.role) {
+        case 'admin':
+          window.location.href = '/admin';
+          break;
+        case 'staff':
+          window.location.href = '/staff';
+          break;
+        case 'customer':
+        default:
+          window.location.href = '/dashboard';
+          break;
+      }
     }, 1500);
   };
 
@@ -145,6 +163,35 @@ const Signup = () => {
                         required
                       />
                     </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <Label>Account Type</Label>
+                    <RadioGroup 
+                      defaultValue="customer" 
+                      value={formData.role}
+                      onValueChange={handleRoleChange}
+                      className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                    >
+                      <div className="flex items-center space-x-2 rounded-md border p-3 cursor-pointer hover:bg-secondary/20">
+                        <RadioGroupItem value="customer" id="customer" />
+                        <Label htmlFor="customer" className="flex items-center cursor-pointer w-full">
+                          <UserCircle className="h-4 w-4 mr-2 text-primary" /> Customer
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2 rounded-md border p-3 cursor-pointer hover:bg-secondary/20">
+                        <RadioGroupItem value="staff" id="staff" />
+                        <Label htmlFor="staff" className="flex items-center cursor-pointer w-full">
+                          <Users className="h-4 w-4 mr-2 text-primary" /> Staff
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2 rounded-md border p-3 cursor-pointer hover:bg-secondary/20">
+                        <RadioGroupItem value="admin" id="admin" />
+                        <Label htmlFor="admin" className="flex items-center cursor-pointer w-full">
+                          <Shield className="h-4 w-4 mr-2 text-primary" /> Admin
+                        </Label>
+                      </div>
+                    </RadioGroup>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
