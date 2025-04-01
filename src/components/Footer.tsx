@@ -25,7 +25,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           <div className="space-y-4">
             <Link to="/" className="flex items-center space-x-2 text-primary font-bold text-2xl">
-              <span>CleanWash</span>
+              <span>WashHub</span>
             </Link>
             <p className="text-sm text-muted-foreground">
               Premium laundry services, delivering excellence, freshness, and convenience to your doorstep.
@@ -72,7 +72,7 @@ export function Footer() {
               </li>
               <li className="flex items-center">
                 <MailIcon className="h-5 w-5 text-primary mr-2" />
-                <span className="text-sm">info@cleanwash.com</span>
+                <span className="text-sm">info@washhub.com</span>
               </li>
             </ul>
           </div>
@@ -80,7 +80,7 @@ export function Footer() {
 
         <div className="mt-16 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} CleanWash. All rights reserved.
+            © {new Date().getFullYear()} WashHub. All rights reserved.
           </p>
           <div className="flex items-center space-x-6 mt-4 md:mt-0">
             <FooterLink text="Privacy Policy" to="/privacy" />

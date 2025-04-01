@@ -33,7 +33,7 @@ export function Header() {
             className="flex items-center space-x-2 text-primary font-bold text-2xl transition-transform hover:scale-[1.03]"
           >
             <ShoppingBag className="h-6 w-6" />
-            <span>CleanWash</span>
+            <span>WashHub</span>
           </Link>
 
           {/* Desktop navigation */}
