@@ -1,5 +1,6 @@
+
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -19,6 +20,13 @@ import {
 } from 'lucide-react';
 
 const Services = () => {
+  const navigate = useNavigate();
+  
+  // Function to handle scheduling a service
+  const handleScheduleService = (serviceId: string) => {
+    navigate('/schedule', { state: { selectedService: serviceId } });
+  };
+  
   // Service data
   const services = [
     {
@@ -270,8 +278,11 @@ const Services = () => {
                             </ul>
                           </div>
                           
-                          <Button asChild className="btn-premium">
-                            <Link to={`/services/${service.id}`}>Schedule this Service</Link>
+                          <Button 
+                            className="btn-premium"
+                            onClick={() => handleScheduleService(service.id)}
+                          >
+                            Schedule this Service
                           </Button>
                         </div>
                         
@@ -336,8 +347,12 @@ const Services = () => {
               Join thousands of satisfied customers who have reclaimed their time by letting us handle their laundry needs.
             </p>
             <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-              <Button size="lg" asChild className="btn-premium">
-                <Link to="/order">Schedule Your First Pickup</Link>
+              <Button 
+                size="lg" 
+                className="btn-premium"
+                onClick={() => navigate('/schedule')}
+              >
+                Schedule Your First Pickup
               </Button>
               <Button size="lg" asChild variant="outline">
                 <Link to="/contact">Have Questions? Contact Us</Link>

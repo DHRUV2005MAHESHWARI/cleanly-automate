@@ -1,5 +1,6 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,8 +14,16 @@ import { Calendar as CalendarIcon, Clock, Package, Shirt, MapPin } from 'lucide-
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
+import { Pickup } from '@/lib/types';
+
+interface LocationState {
+  selectedService?: string;
+}
 
 const Schedule = () => {
+  const location = useLocation();
+  const locationState = location.state as LocationState;
+  
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
@@ -22,17 +31,24 @@ const Schedule = () => {
     phone: '',
     email: '',
     address: '',
-    serviceType: 'standard',
+    serviceType: locationState?.selectedService || 'standard',
     time: '',
     notes: '',
   });
+  
+  // Update the service type if it was passed from the ServiceDetail page
+  useEffect(() => {
+    if (locationState?.selectedService) {
+      setFormData(prev => ({ ...prev, serviceType: locationState.selectedService }));
+    }
+  }, [locationState]);
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
   
-  const savePickupToDatabase = async (pickupData: any) => {
+  const savePickupToDatabase = async (pickupData: Partial<Pickup>) => {
     try {
       const { data, error } = await supabase
         .from('pickups')
@@ -72,7 +88,7 @@ const Schedule = () => {
       setIsSubmitting(true);
       
       // Format the date to ISO string for database storage
-      const pickupData = {
+      const pickupData: Partial<Pickup> = {
         ...formData,
         pickup_date: date.toISOString().split('T')[0],
         created_at: new Date().toISOString(),
@@ -102,6 +118,22 @@ const Schedule = () => {
     }
   };
   
+  // Map service types to display names
+  const getServiceDisplayName = (serviceType: string): string => {
+    const serviceNames: Record<string, string> = {
+      'wash-fold': 'Wash & Fold',
+      'dry-cleaning': 'Dry Cleaning',
+      'express': 'Express Service',
+      'stain-removal': 'Stain Removal',
+      'alterations': 'Alterations & Repairs',
+      'ironing': 'Ironing & Pressing',
+      'standard': 'Standard Service',
+      'premium': 'Premium Service'
+    };
+    
+    return serviceNames[serviceType] || serviceType;
+  };
+  
   return (
     <Layout>
       <section className="py-20">
@@ -112,6 +144,11 @@ const Schedule = () => {
               <p className="text-muted-foreground">
                 Book your laundry service in just a few simple steps
               </p>
+              {locationState?.selectedService && (
+                <div className="mt-4 inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium">
+                  Selected service: {getServiceDisplayName(locationState.selectedService)}
+                </div>
+              )}
             </div>
             
             <Card className="glass-card">
@@ -174,15 +211,20 @@ const Schedule = () => {
                   <div className="space-y-3">
                     <Label>Service Type</Label>
                     <RadioGroup 
-                      defaultValue="standard" 
                       value={formData.serviceType}
                       onValueChange={(value) => setFormData(prev => ({ ...prev, serviceType: value }))}
                       className="grid grid-cols-1 md:grid-cols-3 gap-4"
                     >
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="standard" id="standard" />
-                        <Label htmlFor="standard" className="flex items-center cursor-pointer">
-                          <Shirt className="h-4 w-4 mr-2 text-muted-foreground" /> Standard
+                        <RadioGroupItem value="wash-fold" id="wash-fold" />
+                        <Label htmlFor="wash-fold" className="flex items-center cursor-pointer">
+                          <Shirt className="h-4 w-4 mr-2 text-muted-foreground" /> Wash & Fold
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="dry-cleaning" id="dry-cleaning" />
+                        <Label htmlFor="dry-cleaning" className="flex items-center cursor-pointer">
+                          <Shirt className="h-4 w-4 mr-2 text-muted-foreground" /> Dry Cleaning
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2">
@@ -192,9 +234,21 @@ const Schedule = () => {
                         </Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="premium" id="premium" />
-                        <Label htmlFor="premium" className="flex items-center cursor-pointer">
-                          <Shirt className="h-4 w-4 mr-2 text-muted-foreground" /> Premium
+                        <RadioGroupItem value="stain-removal" id="stain-removal" />
+                        <Label htmlFor="stain-removal" className="flex items-center cursor-pointer">
+                          <Shirt className="h-4 w-4 mr-2 text-muted-foreground" /> Stain Removal
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="alterations" id="alterations" />
+                        <Label htmlFor="alterations" className="flex items-center cursor-pointer">
+                          <Shirt className="h-4 w-4 mr-2 text-muted-foreground" /> Alterations
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="ironing" id="ironing" />
+                        <Label htmlFor="ironing" className="flex items-center cursor-pointer">
+                          <Shirt className="h-4 w-4 mr-2 text-muted-foreground" /> Ironing
                         </Label>
                       </div>
                     </RadioGroup>

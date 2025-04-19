@@ -74,6 +74,38 @@ const ServiceDetail = () => {
       alert: 'Not all stains can be completely removed, especially set-in stains or those previously treated incorrectly.',
       image: 'https://images.unsplash.com/photo-1551761429-8232f9f5955c?q=80&w=1470&auto=format&fit=crop',
     },
+    'alterations': {
+      title: 'Alterations & Repairs',
+      description: 'Professional tailoring services for alterations, repairs, and restyling of your garments.',
+      details: 'Our skilled tailors can handle everything from simple repairs to complex alterations, ensuring your garments fit perfectly and look their best.',
+      pricing: 'From $7.99/item',
+      timeEstimate: '3-5 days',
+      inclusions: [
+        'Free consultation and measurements',
+        'Hemming and length adjustments',
+        'Seam repairs and reinforcement',
+        'Button replacement',
+        'Zipper repair or replacement',
+      ],
+      alert: 'Complex alterations may require a longer timeframe and additional costs.',
+      image: 'https://images.unsplash.com/photo-1517677208171-0bc6725a3e60?q=80&w=1470&auto=format&fit=crop',
+    },
+    'ironing': {
+      title: 'Ironing & Pressing',
+      description: 'Professional ironing and pressing service to give your clothes a crisp, wrinkle-free finish.',
+      details: 'Our expert pressers use professional-grade equipment to ensure your garments are perfectly smoothed and ready to wear, saving you time and effort.',
+      pricing: 'From $2.49/item',
+      timeEstimate: '24-48 hours',
+      inclusions: [
+        'Professional pressing',
+        'Steaming for delicate items',
+        'Collar and cuff shaping',
+        'Proper hanging or folding',
+        'Garment protection bags',
+      ],
+      alert: 'Some fabrics may not be suitable for high-heat ironing.',
+      image: 'https://images.unsplash.com/photo-1517677208171-0bc6725a3e60?q=80&w=1470&auto=format&fit=crop',
+    },
   };
 
   const service = services[serviceId as keyof typeof services];
@@ -90,6 +122,11 @@ const ServiceDetail = () => {
       </Layout>
     );
   }
+
+  // Navigate to the schedule page with the selected service
+  const handleScheduleService = () => {
+    navigate('/schedule', { state: { selectedService: serviceId } });
+  };
 
   return (
     <Layout>
@@ -139,7 +176,7 @@ const ServiceDetail = () => {
               </ul>
             </div>
 
-            <Button className="btn-premium">
+            <Button className="btn-premium" onClick={handleScheduleService}>
               Schedule This Service
             </Button>
           </div>
