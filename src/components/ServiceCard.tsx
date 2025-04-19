@@ -25,7 +25,7 @@ export function ServiceCard({ title, description, icon, price, link, index }: Se
         <div className="h-12 w-12 flex items-center justify-center rounded-full bg-primary/10 text-primary">
           {icon}
         </div>
-        <div className="chip bg-secondary text-foreground">{price}</div>
+        <div className="chip bg-secondary text-foreground">₹{price}</div>
       </div>
       <h3 className="text-xl font-semibold mb-2">{title}</h3>
       <p className="text-muted-foreground text-sm mb-4 flex-grow">{description}</p>

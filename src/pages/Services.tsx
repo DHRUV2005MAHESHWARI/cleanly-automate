@@ -32,7 +32,7 @@ const Services = () => {
       icon: <Shirt className="h-8 w-8" />,
       description: 'Our most popular service includes sorting, washing, drying, and folding your everyday items.',
       details: 'We carefully sort your laundry by color and fabric type to ensure the best care. After washing with premium detergents and fabric softeners, we dry and fold each item to perfection.',
-      pricing: '$1.99/lb',
+      pricing: '₹149/kg',
       timeEstimate: '48 hours',
       inclusions: [
         'Sorting by color and fabric type',
@@ -41,7 +41,7 @@ const Services = () => {
         'Neat folding and packaging',
         'Basic repairs (button attachment)',
       ],
-      alert: 'Minimum 10 lbs per order.',
+      alert: 'Minimum 5 kg per order.',
     },
     {
       id: 'dry-cleaning',
@@ -49,7 +49,7 @@ const Services = () => {
       icon: <ShoppingBag className="h-8 w-8" />,
       description: 'Professional treatment for your delicate items, suits, dresses, and other special garments.',
       details: 'Our dry cleaning service uses safe solvents and expert handling techniques to clean garments that cannot be washed with water, preserving their color, texture, and shape.',
-      pricing: 'From $5.99/item',
+      pricing: 'From ₹449/item',
       timeEstimate: '72 hours',
       inclusions: [
         'Garment inspection',
@@ -83,7 +83,7 @@ const Services = () => {
       icon: <Sparkles className="h-8 w-8" />,
       description: 'Specialized treatments to remove stubborn stains from various fabrics and garments.',
       details: 'Our stain specialists use advanced techniques and professional products to target and remove difficult stains while preserving the integrity of your garments.',
-      pricing: 'From $3.99/stain',
+      pricing: 'From ₹299/stain',
       timeEstimate: '48-72 hours',
       inclusions: [
         'Stain assessment',
@@ -100,7 +100,7 @@ const Services = () => {
       icon: <Scissors className="h-8 w-8" />,
       description: 'Professional tailoring services for alterations, repairs, and restyling of your garments.',
       details: 'Our skilled tailors can handle everything from simple repairs to complex alterations, ensuring your garments fit perfectly and look their best.',
-      pricing: 'From $7.99/item',
+      pricing: 'From ₹599/item',
       timeEstimate: '3-5 days',
       inclusions: [
         'Free consultation and measurements',
@@ -117,7 +117,7 @@ const Services = () => {
       icon: <Flame className="h-8 w-8" />,
       description: 'Professional ironing and pressing service to give your clothes a crisp, wrinkle-free finish.',
       details: 'Our expert pressers use professional-grade equipment to ensure your garments are perfectly smoothed and ready to wear, saving you time and effort.',
-      pricing: 'From $2.49/item',
+      pricing: 'From ₹199/item',
       timeEstimate: '24-48 hours',
       inclusions: [
         'Professional pressing',

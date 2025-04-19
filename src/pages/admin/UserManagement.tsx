@@ -23,16 +23,16 @@ import { Users, Shield, Settings, Package, CreditCard, LineChart, Home, Search, 
 
 // Mock user data
 const mockUsers = [
-  { id: 1, name: "John Smith", email: "john@example.com", phone: "555-123-4567", status: "Active", joinDate: "Jan 12, 2023", orders: 8 },
-  { id: 2, name: "Sarah Johnson", email: "sarah@example.com", phone: "555-234-5678", status: "Active", joinDate: "Feb 5, 2023", orders: 12 },
-  { id: 3, name: "Michael Brown", email: "michael@example.com", phone: "555-345-6789", status: "Inactive", joinDate: "Mar 18, 2023", orders: 3 },
-  { id: 4, name: "Emma Wilson", email: "emma@example.com", phone: "555-456-7890", status: "Active", joinDate: "Apr 20, 2023", orders: 7 },
-  { id: 5, name: "David Lee", email: "david@example.com", phone: "555-567-8901", status: "Active", joinDate: "May 2, 2023", orders: 5 },
-  { id: 6, name: "Jessica Clark", email: "jessica@example.com", phone: "555-678-9012", status: "Suspended", joinDate: "Jun 15, 2023", orders: 0 },
-  { id: 7, name: "Robert Taylor", email: "robert@example.com", phone: "555-789-0123", status: "Active", joinDate: "Jul 8, 2023", orders: 9 },
-  { id: 8, name: "Lisa Martinez", email: "lisa@example.com", phone: "555-890-1234", status: "Active", joinDate: "Aug 22, 2023", orders: 4 },
-  { id: 9, name: "Thomas Anderson", email: "thomas@example.com", phone: "555-901-2345", status: "Inactive", joinDate: "Sep 11, 2023", orders: 2 },
-  { id: 10, name: "Patricia Moore", email: "patricia@example.com", phone: "555-012-3456", status: "Active", joinDate: "Oct 5, 2023", orders: 6 },
+  { id: 1, name: "Arjun Patel", email: "arjun@example.com", phone: "987-123-4567", status: "Active", joinDate: "Jan 12, 2023", orders: 8 },
+  { id: 2, name: "Priya Sharma", email: "priya@example.com", phone: "987-234-5678", status: "Active", joinDate: "Feb 5, 2023", orders: 12 },
+  { id: 3, name: "Rahul Verma", email: "rahul@example.com", phone: "987-345-6789", status: "Inactive", joinDate: "Mar 18, 2023", orders: 3 },
+  { id: 4, name: "Neha Gupta", email: "neha@example.com", phone: "987-456-7890", status: "Active", joinDate: "Apr 20, 2023", orders: 7 },
+  { id: 5, name: "Aditya Kumar", email: "aditya@example.com", phone: "987-567-8901", status: "Active", joinDate: "May 2, 2023", orders: 5 },
+  { id: 6, name: "Meera Singh", email: "meera@example.com", phone: "987-678-9012", status: "Suspended", joinDate: "Jun 15, 2023", orders: 0 },
+  { id: 7, name: "Raj Malhotra", email: "raj@example.com", phone: "987-789-0123", status: "Active", joinDate: "Jul 8, 2023", orders: 9 },
+  { id: 8, name: "Ananya Reddy", email: "ananya@example.com", phone: "987-890-1234", status: "Active", joinDate: "Aug 22, 2023", orders: 4 },
+  { id: 9, name: "Vikram Mehta", email: "vikram@example.com", phone: "987-901-2345", status: "Inactive", joinDate: "Sep 11, 2023", orders: 2 },
+  { id: 10, name: "Kavita Iyer", email: "kavita@example.com", phone: "987-012-3456", status: "Active", joinDate: "Oct 5, 2023", orders: 6 },
 ];
 
 const UserManagement = () => {
