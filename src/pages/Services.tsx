@@ -1,4 +1,3 @@
-
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
@@ -22,12 +21,10 @@ import {
 const Services = () => {
   const navigate = useNavigate();
   
-  // Function to handle scheduling a service
   const handleScheduleService = (serviceId: string) => {
     navigate('/schedule', { state: { selectedService: serviceId } });
   };
   
-  // Service data
   const services = [
     {
       id: 'wash-fold',
@@ -133,7 +130,6 @@ const Services = () => {
     },
   ];
 
-  // Additional content
   const environmentContent = (
     <Card className="glass-card overflow-hidden">
       <CardContent className="p-0">
@@ -181,7 +177,6 @@ const Services = () => {
 
   return (
     <Layout>
-      {/* Hero Section */}
       <section className="py-20 bg-secondary">
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-3xl mx-auto text-center">
@@ -202,7 +197,6 @@ const Services = () => {
         </div>
       </section>
 
-      {/* Services Section */}
       <section className="py-20">
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-3xl mx-auto text-center mb-16">
@@ -278,12 +272,22 @@ const Services = () => {
                             </ul>
                           </div>
                           
-                          <Button 
-                            className="btn-premium"
-                            onClick={() => handleScheduleService(service.id)}
-                          >
-                            Schedule this Service
-                          </Button>
+                          <div className="flex space-x-4">
+                            <Button 
+                              className="btn-premium"
+                              onClick={() => handleScheduleService(service.id)}
+                            >
+                              Schedule this Service
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              asChild
+                            >
+                              <Link to={`/services/${service.id}`}>
+                                Learn More
+                              </Link>
+                            </Button>
+                          </div>
                         </div>
                         
                         <div className="hidden lg:block relative h-full">
@@ -322,7 +326,6 @@ const Services = () => {
         </div>
       </section>
 
-      {/* Additional Sections */}
       <section className="py-20 bg-secondary">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -338,7 +341,6 @@ const Services = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-20">
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-3xl mx-auto text-center">

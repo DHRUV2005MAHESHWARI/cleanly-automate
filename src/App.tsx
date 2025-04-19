@@ -12,6 +12,7 @@ import Signup from "./pages/Signup";
 import TrackOrder from "./pages/TrackOrder";
 import Services from "./pages/Services";
 import ServiceDetail from "./pages/ServiceDetail";
+import About from "./pages/About";
 import Pricing from "./pages/Pricing";
 import Contact from "./pages/Contact";
 import Dashboard from "./pages/Dashboard";
@@ -62,6 +63,7 @@ const App = () => {
               <Route path="/track" element={<TrackOrder />} />
               <Route path="/services" element={<Services />} />
               <Route path="/services/:serviceId" element={<ServiceDetail />} />
+              <Route path="/about" element={<About />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/contact" element={<Contact />} />
               
