@@ -8,9 +8,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { EyeIcon, EyeOffIcon, ShoppingBag, Mail, Lock, UserCircle } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, ShoppingBag, Mail, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { supabase } from '@/lib/supabase';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -54,33 +55,43 @@ const Login = () => {
     
     setIsLoading(true);
     
-    // Simulate login API call
-    setTimeout(() => {
-      setIsLoading(false);
-      
-      // Admin credentials for demo
-      if (userRole === 'admin' || (email === 'admin@example.com' && password === 'admin123')) {
+    // In a real application, this would call the Supabase auth API
+    // For now we'll use the mock implementation for demonstration
+    
+    // Admin credentials for demo
+    if (userRole === 'admin' || (email === 'admin@example.com' && password === 'admin123')) {
+      setTimeout(() => {
+        setIsLoading(false);
+        localStorage.setItem('userRole', 'admin');
         toast.success('Welcome back, Admin!');
         navigate('/admin');
-        return;
-      }
-      
-      // Staff role
-      if (userRole === 'staff') {
+      }, 1500);
+      return;
+    }
+    
+    // Staff role
+    if (userRole === 'staff') {
+      setTimeout(() => {
+        setIsLoading(false);
+        localStorage.setItem('userRole', 'staff');
         toast.success('Welcome back, Staff member!');
-        // In a real app, navigate to staff dashboard
-        navigate('/dashboard');
-        return;
-      }
-      
-      // Regular user login
-      if (email && password) {
+        navigate('/staff');
+      }, 1500);
+      return;
+    }
+    
+    // Regular user login - FIXED: now consistently goes to dashboard
+    if (email && password) {
+      setTimeout(() => {
+        setIsLoading(false);
+        localStorage.setItem('userRole', 'user');
         toast.success('Successfully logged in!');
         navigate('/dashboard');
-      } else {
-        toast.error('Please enter both email and password');
-      }
-    }, 1500);
+      }, 1500);
+    } else {
+      setIsLoading(false);
+      toast.error('Please enter both email and password');
+    }
   };
 
   return (

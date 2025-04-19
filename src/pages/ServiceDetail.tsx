@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Check, TriangleAlert, Star } from 'lucide-react';
+import { toast } from 'sonner';
 
 const ServiceDetail = () => {
   const { serviceId } = useParams();
@@ -125,7 +126,9 @@ const ServiceDetail = () => {
 
   // Navigate to the schedule page with the selected service
   const handleScheduleService = () => {
+    // Pass the selected service to the schedule page
     navigate('/schedule', { state: { selectedService: serviceId } });
+    toast.success(`You've selected ${service.title} service. Fill out the form to complete scheduling.`);
   };
 
   return (
