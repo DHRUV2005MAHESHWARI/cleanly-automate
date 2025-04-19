@@ -13,7 +13,7 @@ const PricingPage = () => {
     {
       name: 'Basic',
       description: 'Perfect for individuals with occasional laundry needs',
-      price: billingCycle === 'monthly' ? 19.99 : 199.99,
+      price: billingCycle === 'monthly' ? 1499 : 14999,
       features: [
         'Standard washing & drying',
         'Up to 10kg per month',
@@ -27,7 +27,7 @@ const PricingPage = () => {
     {
       name: 'Premium',
       description: 'Ideal for families with regular laundry needs',
-      price: billingCycle === 'monthly' ? 39.99 : 399.99,
+      price: billingCycle === 'monthly' ? 2999 : 29999,
       features: [
         'Premium washing & drying',
         'Up to 25kg per month',
@@ -43,7 +43,7 @@ const PricingPage = () => {
     {
       name: 'Business',
       description: 'For businesses with high volume requirements',
-      price: billingCycle === 'monthly' ? 89.99 : 899.99,
+      price: billingCycle === 'monthly' ? 6999 : 69999,
       features: [
         'Commercial washing & drying',
         'Unlimited weight',
@@ -117,7 +117,7 @@ const PricingPage = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="mb-6">
-                    <span className="text-3xl font-bold">${plan.price.toFixed(2)}</span>
+                    <span className="text-3xl font-bold">₹{plan.price.toFixed(2)}</span>
                     <span className="text-muted-foreground">/{billingCycle === 'monthly' ? 'month' : 'year'}</span>
                   </div>
                   <ul className="space-y-3">
