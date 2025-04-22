@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,6 +12,7 @@ const UserDashboard = () => {
   const [userOrders, setUserOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [subscription, setSubscription] = useState<any>(null);
+  const [userName, setUserName] = useState<string>('');
   const navigate = useNavigate();
 
   const requireAuth = (cb: () => void) => {
@@ -25,6 +27,10 @@ const UserDashboard = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
+        // Retrieve user name from localStorage
+        const storedName = localStorage.getItem('userName') || 'User';
+        setUserName(storedName);
+
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         const mockOrders = [
@@ -59,7 +65,7 @@ const UserDashboard = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <h2 className="text-2xl font-bold">Welcome back, {localStorage.getItem('userName') || 'User'}</h2>
+        <h2 className="text-2xl font-bold">Welcome back, {userName}</h2>
         <div className="flex space-x-2">
           <Button
             variant="outline"
