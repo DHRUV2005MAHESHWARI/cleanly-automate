@@ -6,13 +6,16 @@ import { useNavigate } from "react-router-dom";
 interface BackButtonProps {
   to?: string;
   label?: string;
+  onClick?: () => void;
 }
 
-export function BackButton({ to, label = "Back" }: BackButtonProps) {
+export function BackButton({ to, label = "Back", onClick }: BackButtonProps) {
   const navigate = useNavigate();
   
   const handleClick = () => {
-    if (to) {
+    if (onClick) {
+      onClick();
+    } else if (to) {
       navigate(to);
     } else {
       navigate(-1);
