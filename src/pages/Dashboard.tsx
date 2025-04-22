@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Layout } from "@/components/Layout";
 import DashboardMetrics from "@/components/dashboard/DashboardMetrics";
@@ -15,6 +14,16 @@ import { toast } from "sonner";
 const Dashboard = () => {
   const [userRole, setUserRole] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  // Helper for authentication redirect
+  const requireAuth = (cb: () => void) => {
+    const userRole = localStorage.getItem('userRole');
+    if (!userRole) {
+      navigate('/login');
+    } else {
+      cb();
+    }
+  };
 
   useEffect(() => {
     // Check user role and redirect if needed
@@ -55,17 +64,17 @@ const Dashboard = () => {
       <div className="container mx-auto py-8 px-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <h1 className="text-3xl font-bold">Dashboard</h1>
-          
           <div className="flex space-x-2">
-            <Button asChild variant="outline">
-              <Link to="/schedule">
-                Schedule Service
-              </Link>
+            <Button
+              variant="outline"
+              onClick={() => requireAuth(() => navigate('/schedule'))}
+            >
+              Schedule Service
             </Button>
-            <Button asChild>
-              <Link to="/track">
-                Track Order
-              </Link>
+            <Button
+              onClick={() => requireAuth(() => navigate('/track'))}
+            >
+              Track Order
             </Button>
           </div>
         </div>

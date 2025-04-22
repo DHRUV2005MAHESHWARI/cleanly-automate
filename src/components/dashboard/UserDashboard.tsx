@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,21 +5,28 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { Calendar, Clock, Package, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const UserDashboard = () => {
   const [userOrders, setUserOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [subscription, setSubscription] = useState<any>(null);
+  const navigate = useNavigate();
+
+  const requireAuth = (cb: () => void) => {
+    const userRole = localStorage.getItem('userRole');
+    if (!userRole) {
+      navigate('/login');
+    } else {
+      cb();
+    }
+  };
 
   useEffect(() => {
-    // In a real application, this would fetch from Supabase
-    // For now we'll use mock data for demonstration
     const loadData = async () => {
       try {
-        // Simulate API call delay
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        // Mock user orders
         const mockOrders = [
           { id: "USR-001", service: "Wash & Fold", items: 5, status: "Processing", date: "2025-04-20" },
           { id: "USR-002", service: "Dry Cleaning", items: 2, status: "Ready", date: "2025-04-18" },
@@ -28,7 +34,6 @@ const UserDashboard = () => {
         
         setUserOrders(mockOrders);
         
-        // Get subscription from localStorage if available
         const savedSubscription = localStorage.getItem('userSubscription');
         if (savedSubscription) {
           setSubscription(JSON.parse(savedSubscription));
@@ -55,18 +60,21 @@ const UserDashboard = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <h2 className="text-2xl font-bold">Welcome back, {localStorage.getItem('userName') || 'User'}</h2>
-        
         <div className="flex space-x-2">
-          <Button asChild variant="outline">
-            <Link to="/schedule">Schedule Pickup</Link>
+          <Button
+            variant="outline"
+            onClick={() => requireAuth(() => navigate("/schedule"))}
+          >
+            Schedule Pickup
           </Button>
-          <Button asChild>
-            <Link to="/track">Track Order</Link>
+          <Button
+            onClick={() => requireAuth(() => navigate("/track"))}
+          >
+            Track Order
           </Button>
         </div>
       </div>
 
-      {/* User metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {userMetrics.map((metric, index) => (
           <Card key={index}>
@@ -85,7 +93,6 @@ const UserDashboard = () => {
         ))}
       </div>
 
-      {/* Subscription info */}
       {subscription ? (
         <Card className="border-primary">
           <CardHeader>
@@ -124,7 +131,6 @@ const UserDashboard = () => {
         </Card>
       )}
 
-      {/* Recent orders */}
       <Card>
         <CardHeader>
           <CardTitle>Your Recent Orders</CardTitle>

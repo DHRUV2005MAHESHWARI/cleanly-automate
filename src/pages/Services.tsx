@@ -20,11 +20,22 @@ import {
 
 const Services = () => {
   const navigate = useNavigate();
-  
-  const handleScheduleService = (serviceId: string) => {
-    navigate('/schedule', { state: { selectedService: serviceId } });
+
+  const requireAuth = (cb: () => void) => {
+    const userRole = localStorage.getItem('userRole');
+    if (!userRole) {
+      navigate('/login');
+    } else {
+      cb();
+    }
   };
-  
+
+  const handleScheduleService = (serviceId: string) => {
+    requireAuth(() => {
+      navigate('/schedule', { state: { selectedService: serviceId } });
+    });
+  };
+
   const services = [
     {
       id: 'wash-fold',

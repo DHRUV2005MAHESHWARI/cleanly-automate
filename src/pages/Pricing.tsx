@@ -15,6 +15,16 @@ const PricingPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const navigate = useNavigate();
 
+  const requireAuth = (cb: () => void) => {
+    const userRole = localStorage.getItem('userRole');
+    if (!userRole) {
+      toast.info('Please login to subscribe to a plan');
+      navigate('/login');
+    } else {
+      cb();
+    }
+  };
+
   const pricingPlans = [
     {
       name: 'Basic',
@@ -67,21 +77,14 @@ const PricingPage = () => {
   ];
 
   const handleChoosePlan = (plan: any) => {
-    const userRole = localStorage.getItem('userRole');
-    
-    if (!userRole) {
-      toast.info('Please login to subscribe to a plan');
-      navigate('/login');
-      return;
-    }
-    
     if (plan.name === 'Business') {
-      navigate('/contact');
+      requireAuth(() => navigate('/contact'));
       return;
     }
-    
-    setSelectedPlan(plan);
-    setIsDialogOpen(true);
+    requireAuth(() => {
+      setSelectedPlan(plan);
+      setIsDialogOpen(true);
+    });
   };
 
   return (
