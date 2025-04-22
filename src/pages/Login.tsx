@@ -80,13 +80,14 @@ const Login = () => {
       return;
     }
     
-    // Regular user login - FIXED: now consistently goes to dashboard
+    // Regular user login - User should be redirected to user dashboard or schedule page
     if (email && password) {
       setTimeout(() => {
         setIsLoading(false);
         localStorage.setItem('userRole', 'user');
         toast.success('Successfully logged in!');
-        navigate('/dashboard');
+        // Redirect user to the schedule page instead of dashboard
+        navigate('/schedule');
       }, 1500);
     } else {
       setIsLoading(false);

@@ -1,15 +1,55 @@
 
+import { useState, useEffect } from "react";
 import { Layout } from "@/components/Layout";
 import DashboardMetrics from "@/components/dashboard/DashboardMetrics";
 import RecentOrders from "@/components/dashboard/RecentOrders";
 import PendingPickups from "@/components/dashboard/PendingPickups";
 import CustomerSummary from "@/components/dashboard/CustomerSummary";
 import InventoryManagement from "@/components/admin/InventoryManagement";
+import UserDashboard from "@/components/dashboard/UserDashboard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const Dashboard = () => {
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check user role and redirect if needed
+    const role = localStorage.getItem('userRole');
+    setUserRole(role);
+    
+    if (!role) {
+      toast.error('Please login to access the dashboard');
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  // If the user is not logged in or we're still checking auth, show loading
+  if (!userRole) {
+    return (
+      <Layout>
+        <div className="container mx-auto py-8 px-4 flex justify-center items-center min-h-[60vh]">
+          <p>Loading dashboard...</p>
+        </div>
+      </Layout>
+    );
+  }
+
+  // For regular users, show the user dashboard
+  if (userRole === 'user') {
+    return (
+      <Layout>
+        <div className="container mx-auto py-8 px-4">
+          <UserDashboard />
+        </div>
+      </Layout>
+    );
+  }
+
+  // For admin or staff, show the admin dashboard
   return (
     <Layout>
       <div className="container mx-auto py-8 px-4">

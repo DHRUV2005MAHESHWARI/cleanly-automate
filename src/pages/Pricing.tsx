@@ -5,9 +5,16 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Check } from 'lucide-react';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import SubscriptionPayment from '@/components/SubscriptionPayment';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 const PricingPage = () => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+  const [selectedPlan, setSelectedPlan] = useState<any>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const navigate = useNavigate();
 
   const pricingPlans = [
     {
@@ -59,6 +66,26 @@ const PricingPage = () => {
       buttonText: 'Contact Sales'
     }
   ];
+
+  const handleChoosePlan = (plan: any) => {
+    const userRole = localStorage.getItem('userRole');
+    
+    if (!userRole) {
+      toast.info('Please login to subscribe to a plan');
+      navigate('/login');
+      return;
+    }
+    
+    if (plan.name === 'Business') {
+      // For Business plan, just redirect to contact page
+      navigate('/contact');
+      return;
+    }
+    
+    // For other plans, open the payment dialog
+    setSelectedPlan(plan);
+    setIsDialogOpen(true);
+  };
 
   return (
     <Layout>
@@ -117,7 +144,7 @@ const PricingPage = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="mb-6">
-                    <span className="text-3xl font-bold">₹{plan.price.toFixed(2)}</span>
+                    <span className="text-3xl font-bold">₹{(plan.price/100).toFixed(2)}</span>
                     <span className="text-muted-foreground">/{billingCycle === 'monthly' ? 'month' : 'year'}</span>
                   </div>
                   <ul className="space-y-3">
@@ -133,6 +160,7 @@ const PricingPage = () => {
                   <Button 
                     className={`w-full ${plan.popular ? 'btn-premium' : ''}`} 
                     variant={plan.popular ? 'default' : 'outline'}
+                    onClick={() => handleChoosePlan(plan)}
                   >
                     {plan.buttonText}
                   </Button>
@@ -146,10 +174,23 @@ const PricingPage = () => {
             <p className="text-muted-foreground mb-4">
               Contact our sales team for a tailored solution that fits your specific requirements.
             </p>
-            <Button variant="default">Contact Sales</Button>
+            <Button variant="default" onClick={() => navigate('/contact')}>Contact Sales</Button>
           </div>
         </div>
       </section>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          {selectedPlan && (
+            <SubscriptionPayment
+              plan={selectedPlan.name}
+              price={selectedPlan.price/100}
+              cycle={billingCycle}
+              onClose={() => setIsDialogOpen(false)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };

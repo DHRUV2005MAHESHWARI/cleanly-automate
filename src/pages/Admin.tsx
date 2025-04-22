@@ -19,10 +19,254 @@ import {
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link, useNavigate } from "react-router-dom";
-import { Users, Shield, Settings, Package, CreditCard, LineChart, Home, CheckCircle, XCircle, Clock } from "lucide-react";
+import { 
+  Users, Shield, Settings, Package, CreditCard, LineChart, Home, 
+  CheckCircle, XCircle, Clock, ArrowLeft, FileText, Activity
+} from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Pickup } from "@/lib/types";
 import { toast } from "sonner";
+import { BackButton } from "@/components/ui/back-button";
+
+// Admin Orders component for Orders tab
+const AdminOrders = () => {
+  const [orders, setOrders] = useState([
+    { id: "#ORD-7893", customer: "Rahul Sharma", amount: "₹12,999", status: "Completed", date: "2025-04-15" },
+    { id: "#ORD-7894", customer: "Priya Patel", amount: "₹7,999", status: "Processing", date: "2025-04-16" },
+    { id: "#ORD-7895", customer: "Amit Kumar", amount: "₹18,999", status: "Processing", date: "2025-04-17" },
+    { id: "#ORD-7896", customer: "Neha Singh", amount: "₹4,999", status: "Completed", date: "2025-04-18" },
+    { id: "#ORD-7897", customer: "Vikram Choudhury", amount: "₹9,999", status: "Pending", date: "2025-04-20" },
+  ]);
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Order Management</CardTitle>
+        <CardDescription>
+          View and manage all customer orders
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Order ID</TableHead>
+                <TableHead>Customer</TableHead>
+                <TableHead>Amount</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {orders.map((order, index) => (
+                <TableRow key={index}>
+                  <TableCell className="font-medium">{order.id}</TableCell>
+                  <TableCell>{order.customer}</TableCell>
+                  <TableCell>{order.amount}</TableCell>
+                  <TableCell>{order.date}</TableCell>
+                  <TableCell>
+                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                      order.status === 'Completed' ? 'bg-green-100 text-green-800' :
+                      order.status === 'Processing' ? 'bg-blue-100 text-blue-800' :
+                      'bg-amber-100 text-amber-800'
+                    }`}>
+                      {order.status}
+                    </span>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Button variant="ghost" size="sm">View</Button>
+                    <Button variant="ghost" size="sm">Edit</Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+// Admin Billing component for Billing tab
+const AdminBilling = () => {
+  const [invoices, setInvoices] = useState([
+    { id: "INV-001", customer: "Rahul Sharma", amount: "₹12,999", status: "Paid", date: "2025-04-15" },
+    { id: "INV-002", customer: "Priya Patel", amount: "₹7,999", status: "Pending", date: "2025-04-16" },
+    { id: "INV-003", customer: "Amit Kumar", amount: "₹18,999", status: "Paid", date: "2025-04-17" },
+    { id: "INV-004", customer: "Neha Singh", amount: "₹4,999", status: "Overdue", date: "2025-04-10" },
+  ]);
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Billing Summary</CardTitle>
+          <CardDescription>
+            Overview of billing and payment status
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-md">Total Revenue</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">₹45,289.00</div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  <span className="text-green-500 font-medium">+12.5% from last month</span>
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-md">Pending Payments</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">₹8,750.00</div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  <span className="text-amber-500 font-medium">3 invoices pending</span>
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-md">Overdue Payments</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">₹4,999.00</div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  <span className="text-red-500 font-medium">1 invoice overdue</span>
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <h3 className="text-lg font-semibold mb-3">Recent Invoices</h3>
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Invoice ID</TableHead>
+                  <TableHead>Customer</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {invoices.map((invoice, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium">{invoice.id}</TableCell>
+                    <TableCell>{invoice.customer}</TableCell>
+                    <TableCell>{invoice.amount}</TableCell>
+                    <TableCell>{invoice.date}</TableCell>
+                    <TableCell>
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                        invoice.status === 'Paid' ? 'bg-green-100 text-green-800' :
+                        invoice.status === 'Pending' ? 'bg-amber-100 text-amber-800' :
+                        'bg-red-100 text-red-800'
+                      }`}>
+                        {invoice.status}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button variant="ghost" size="sm">View</Button>
+                      <Button variant="ghost" size="sm">Send Reminder</Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
+      
+      <Card>
+        <CardHeader>
+          <CardTitle>Payment Analytics</CardTitle>
+          <CardDescription>
+            Payment trends and financial metrics
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex items-center justify-center py-10">
+          <div className="text-center">
+            <Activity className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+            <p className="text-muted-foreground">
+              Interactive payment analytics charts will be displayed here
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+// Admin Settings component for Settings tab
+const AdminSettings = () => {
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>System Settings</CardTitle>
+          <CardDescription>
+            Configure system-wide settings and preferences
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <h3 className="text-lg font-medium">General Settings</h3>
+                <Card className="p-4">
+                  <Button className="w-full mb-2">Email Notifications</Button>
+                  <Button className="w-full mb-2">SMS Notifications</Button>
+                  <Button className="w-full mb-2">System Maintenance</Button>
+                  <Button className="w-full">Backup & Restore</Button>
+                </Card>
+              </div>
+              
+              <div className="space-y-2">
+                <h3 className="text-lg font-medium">Service Configuration</h3>
+                <Card className="p-4">
+                  <Button className="w-full mb-2">Service Categories</Button>
+                  <Button className="w-full mb-2">Pricing Rules</Button>
+                  <Button className="w-full mb-2">Delivery Zones</Button>
+                  <Button className="w-full">Service Hours</Button>
+                </Card>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <h3 className="text-lg font-medium">Payment Settings</h3>
+                <Card className="p-4">
+                  <Button className="w-full mb-2">Payment Methods</Button>
+                  <Button className="w-full mb-2">Currency Settings</Button>
+                  <Button className="w-full mb-2">Tax Configuration</Button>
+                  <Button className="w-full">Discount Rules</Button>
+                </Card>
+              </div>
+              
+              <div className="space-y-2">
+                <h3 className="text-lg font-medium">User Management</h3>
+                <Card className="p-4">
+                  <Button className="w-full mb-2">Admin Users</Button>
+                  <Button className="w-full mb-2">Staff Permissions</Button>
+                  <Button className="w-full mb-2">Access Control</Button>
+                  <Button className="w-full">Audit Logs</Button>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
 
 const AdminDashboard = () => {
   const [stats] = useState({
@@ -30,12 +274,13 @@ const AdminDashboard = () => {
     newUsersToday: 18,
     totalOrders: 1567,
     pendingOrders: 28,
-    revenue: '$45,289.00',
+    revenue: '₹45,289.00',
     orderCompletionRate: '94%'
   });
 
   const [scheduledServices, setScheduledServices] = useState<Pickup[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   const navigate = useNavigate();
 
@@ -113,42 +358,42 @@ const AdminDashboard = () => {
   const mockScheduledServices: Pickup[] = [
     {
       id: 1,
-      name: 'John Smith',
-      phone: '(555) 123-4567',
-      email: 'john@example.com',
-      address: '123 Main St, Anytown',
+      name: 'Rahul Sharma',
+      phone: '+91 98765 43210',
+      email: 'rahul@example.com',
+      address: '123 Bandra West, Mumbai',
       serviceType: 'wash-fold',
-      pickup_date: '2023-11-15',
+      pickup_date: '2025-04-15',
       time: '13:00',
-      notes: 'Ring bell twice',
+      notes: 'Gate code: 1234',
       status: 'Pending',
-      created_at: '2023-11-10T10:30:00Z'
+      created_at: '2025-04-10T10:30:00Z'
     },
     {
       id: 2,
-      name: 'Jane Doe',
-      phone: '(555) 987-6543',
-      email: 'jane@example.com',
-      address: '456 Oak Ave, Somewhere',
+      name: 'Priya Patel',
+      phone: '+91 87654 32109',
+      email: 'priya@example.com',
+      address: '456 Koramangala, Bangalore',
       serviceType: 'dry-cleaning',
-      pickup_date: '2023-11-17',
+      pickup_date: '2025-04-17',
       time: '10:00',
-      notes: 'Delicate items included',
+      notes: 'Silk sarees included',
       status: 'Confirmed',
-      created_at: '2023-11-11T14:15:00Z'
+      created_at: '2025-04-11T14:15:00Z'
     },
     {
       id: 3,
-      name: 'Robert Brown',
-      phone: '(555) 456-7890',
-      email: 'robert@example.com',
-      address: '789 Pine Rd, Nowhere',
+      name: 'Amit Kumar',
+      phone: '+91 76543 21098',
+      email: 'amit@example.com',
+      address: '789 Connaught Place, Delhi',
       serviceType: 'express',
-      pickup_date: '2023-11-20',
+      pickup_date: '2025-04-20',
       time: '15:00',
       notes: '',
       status: 'Completed',
-      created_at: '2023-11-12T09:00:00Z'
+      created_at: '2025-04-12T09:00:00Z'
     }
   ];
 
@@ -164,70 +409,10 @@ const AdminDashboard = () => {
     }
   }, [navigate]);
 
-  return (
-    <Layout>
-      <SidebarProvider>
-        <Sidebar>
-          <SidebarHeader>
-            <div className="flex items-center gap-2 px-2">
-              <Shield className="h-6 w-6 text-primary" />
-              <div className="font-semibold text-lg">Admin Panel</div>
-            </div>
-          </SidebarHeader>
-          
-          <SidebarContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton isActive tooltip="Dashboard" onClick={() => navigate('/admin')}>
-                  <LineChart className="mr-2" />
-                  <span>Dashboard</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              
-              <SidebarMenuItem>
-                <SidebarMenuButton tooltip="Users" onClick={() => navigate('/admin/users')}>
-                  <Users className="mr-2" />
-                  <span>User Management</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              
-              <SidebarMenuItem>
-                <SidebarMenuButton tooltip="Orders">
-                  <Package className="mr-2" />
-                  <span>Orders</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              
-              <SidebarMenuItem>
-                <SidebarMenuButton tooltip="Billing">
-                  <CreditCard className="mr-2" />
-                  <span>Billing</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              
-              <SidebarMenuItem>
-                <SidebarMenuButton tooltip="Settings">
-                  <Settings className="mr-2" />
-                  <span>Settings</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarContent>
-          
-          <SidebarFooter>
-            <SidebarSeparator />
-            <div className="p-2">
-              <Button asChild variant="outline" className="w-full justify-start">
-                <Link to="/">
-                  <Home className="mr-2 h-4 w-4" />
-                  <span>Back to Site</span>
-                </Link>
-              </Button>
-            </div>
-          </SidebarFooter>
-        </Sidebar>
-        
-        <SidebarInset className="p-6">
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'dashboard':
+        return (
           <div className="space-y-6">
             <div>
               <h1 className="text-3xl font-bold">Admin Dashboard</h1>
@@ -266,7 +451,14 @@ const AdminDashboard = () => {
                   </p>
                 </CardContent>
                 <CardFooter className="pt-2">
-                  <Button variant="outline" size="sm" className="w-full">View All Orders</Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full" 
+                    onClick={() => setActiveTab('orders')}
+                  >
+                    View All Orders
+                  </Button>
                 </CardFooter>
               </Card>
               
@@ -282,7 +474,14 @@ const AdminDashboard = () => {
                   </p>
                 </CardContent>
                 <CardFooter className="pt-2">
-                  <Button variant="outline" size="sm" className="w-full">View Reports</Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full"
+                    onClick={() => setActiveTab('billing')}
+                  >
+                    View Reports
+                  </Button>
                 </CardFooter>
               </Card>
             </div>
@@ -394,9 +593,9 @@ const AdminDashboard = () => {
                 <Button asChild>
                   <Link to="/admin/users">Manage Users</Link>
                 </Button>
-                <Button>View Orders</Button>
-                <Button>Process Payments</Button>
-                <Button>System Settings</Button>
+                <Button onClick={() => setActiveTab('orders')}>View Orders</Button>
+                <Button onClick={() => setActiveTab('billing')}>Process Payments</Button>
+                <Button onClick={() => setActiveTab('settings')}>System Settings</Button>
               </div>
             </div>
             
@@ -419,10 +618,10 @@ const AdminDashboard = () => {
                         </div>
                         <div className="divide-y">
                           {[
-                            { name: "John Smith", email: "john@example.com", date: "2 hours ago" },
-                            { name: "Sarah Johnson", email: "sarah@example.com", date: "5 hours ago" },
-                            { name: "Michael Brown", email: "michael@example.com", date: "1 day ago" },
-                            { name: "Emma Wilson", email: "emma@example.com", date: "2 days ago" },
+                            { name: "Arjun Sharma", email: "arjun@example.com", date: "2 hours ago" },
+                            { name: "Sneha Gupta", email: "sneha@example.com", date: "5 hours ago" },
+                            { name: "Vinod Mehta", email: "vinod@example.com", date: "1 day ago" },
+                            { name: "Ritu Mishra", email: "ritu@example.com", date: "2 days ago" },
                           ].map((user, i) => (
                             <div key={i} className="grid grid-cols-3 p-4 text-sm">
                               <div>{user.name}</div>
@@ -448,10 +647,10 @@ const AdminDashboard = () => {
                         </div>
                         <div className="divide-y">
                           {[
-                            { id: "#ORD-7893", customer: "John Smith", amount: "$129.00", status: "Completed" },
-                            { id: "#ORD-7894", customer: "Sarah Johnson", amount: "$79.00", status: "Processing" },
-                            { id: "#ORD-7895", customer: "Michael Brown", amount: "$189.00", status: "Processing" },
-                            { id: "#ORD-7896", customer: "Emma Wilson", amount: "$49.00", status: "Completed" },
+                            { id: "#ORD-7893", customer: "Arjun Sharma", amount: "₹12,999", status: "Completed" },
+                            { id: "#ORD-7894", customer: "Sneha Gupta", amount: "₹7,999", status: "Processing" },
+                            { id: "#ORD-7895", customer: "Vinod Mehta", amount: "₹18,999", status: "Processing" },
+                            { id: "#ORD-7896", customer: "Ritu Mishra", amount: "₹4,999", status: "Completed" },
                           ].map((order, i) => (
                             <div key={i} className="grid grid-cols-4 p-4 text-sm">
                               <div>{order.id}</div>
@@ -470,6 +669,127 @@ const AdminDashboard = () => {
               </Tabs>
             </div>
           </div>
+        );
+      case 'orders':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center">
+              <BackButton label="Back to Dashboard" onClick={() => setActiveTab('dashboard')} />
+            </div>
+            <h1 className="text-3xl font-bold">Orders Management</h1>
+            <AdminOrders />
+          </div>
+        );
+      case 'billing':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center">
+              <BackButton label="Back to Dashboard" onClick={() => setActiveTab('dashboard')} />
+            </div>
+            <h1 className="text-3xl font-bold">Billing Management</h1>
+            <AdminBilling />
+          </div>
+        );
+      case 'settings':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center">
+              <BackButton label="Back to Dashboard" onClick={() => setActiveTab('dashboard')} />
+            </div>
+            <h1 className="text-3xl font-bold">System Settings</h1>
+            <AdminSettings />
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <Layout>
+      <SidebarProvider>
+        <Sidebar>
+          <SidebarHeader>
+            <div className="flex items-center gap-2 px-2">
+              <Shield className="h-6 w-6 text-primary" />
+              <div className="font-semibold text-lg">Admin Panel</div>
+            </div>
+          </SidebarHeader>
+          
+          <SidebarContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  isActive={activeTab === 'dashboard'} 
+                  tooltip="Dashboard" 
+                  onClick={() => setActiveTab('dashboard')}
+                >
+                  <LineChart className="mr-2" />
+                  <span>Dashboard</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  isActive={activeTab === 'users'} 
+                  tooltip="Users" 
+                  onClick={() => navigate('/admin/users')}
+                >
+                  <Users className="mr-2" />
+                  <span>User Management</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  isActive={activeTab === 'orders'} 
+                  tooltip="Orders"
+                  onClick={() => setActiveTab('orders')}
+                >
+                  <Package className="mr-2" />
+                  <span>Orders</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  isActive={activeTab === 'billing'} 
+                  tooltip="Billing"
+                  onClick={() => setActiveTab('billing')}
+                >
+                  <CreditCard className="mr-2" />
+                  <span>Billing</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  isActive={activeTab === 'settings'} 
+                  tooltip="Settings"
+                  onClick={() => setActiveTab('settings')}
+                >
+                  <Settings className="mr-2" />
+                  <span>Settings</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarContent>
+          
+          <SidebarFooter>
+            <SidebarSeparator />
+            <div className="p-2">
+              <Button asChild variant="outline" className="w-full justify-start">
+                <Link to="/">
+                  <Home className="mr-2 h-4 w-4" />
+                  <span>Back to Site</span>
+                </Link>
+              </Button>
+            </div>
+          </SidebarFooter>
+        </Sidebar>
+        
+        <SidebarInset className="p-6">
+          {renderTabContent()}
         </SidebarInset>
       </SidebarProvider>
     </Layout>
