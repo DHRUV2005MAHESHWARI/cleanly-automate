@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -77,12 +76,10 @@ const PricingPage = () => {
     }
     
     if (plan.name === 'Business') {
-      // For Business plan, just redirect to contact page
       navigate('/contact');
       return;
     }
     
-    // For other plans, open the payment dialog
     setSelectedPlan(plan);
     setIsDialogOpen(true);
   };
@@ -144,7 +141,9 @@ const PricingPage = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="mb-6">
-                    <span className="text-3xl font-bold">₹{(plan.price/100).toFixed(2)}</span>
+                    <span className="text-3xl font-bold">
+                      ₹{(plan.price/100).toFixed(2)}
+                    </span>
                     <span className="text-muted-foreground">/{billingCycle === 'monthly' ? 'month' : 'year'}</span>
                   </div>
                   <ul className="space-y-3">
@@ -181,14 +180,14 @@ const PricingPage = () => {
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-md">
-          {selectedPlan && (
+          {selectedPlan ? (
             <SubscriptionPayment
               plan={selectedPlan.name}
               price={selectedPlan.price/100}
               cycle={billingCycle}
               onClose={() => setIsDialogOpen(false)}
             />
-          )}
+          ) : null}
         </DialogContent>
       </Dialog>
     </Layout>
