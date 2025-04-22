@@ -46,6 +46,16 @@ const Login = () => {
     return isValid;
   };
 
+  const getUserNameFromEmail = (email: string) => {
+    if (!email) return 'User';
+    const prefix = email.split('@')[0];
+    if (prefix.length > 0) {
+      // Capitalize first letter
+      return prefix.charAt(0).toUpperCase() + prefix.slice(1);
+    }
+    return 'User';
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -55,14 +65,12 @@ const Login = () => {
     
     setIsLoading(true);
     
-    // In a real application, this would call the Supabase auth API
-    // For now we'll use the mock implementation for demonstration
-    
     // Admin credentials for demo
     if (userRole === 'admin' || (email === 'admin@example.com' && password === 'admin123')) {
       setTimeout(() => {
         setIsLoading(false);
         localStorage.setItem('userRole', 'admin');
+        localStorage.setItem('userName', 'Admin');
         toast.success('Welcome back, Admin!');
         navigate('/admin');
       }, 1500);
@@ -74,6 +82,7 @@ const Login = () => {
       setTimeout(() => {
         setIsLoading(false);
         localStorage.setItem('userRole', 'staff');
+        localStorage.setItem('userName', 'Staff');
         toast.success('Welcome back, Staff member!');
         navigate('/staff');
       }, 1500);
@@ -85,6 +94,9 @@ const Login = () => {
       setTimeout(() => {
         setIsLoading(false);
         localStorage.setItem('userRole', 'user');
+        // Store userName as part before '@' in email, e.g. john for john@example.com
+        const displayName = getUserNameFromEmail(email);
+        localStorage.setItem('userName', displayName);
         toast.success('Successfully logged in!');
         // Redirect user to the schedule page instead of dashboard
         navigate('/schedule');
@@ -262,3 +274,4 @@ const Login = () => {
 };
 
 export default Login;
+
