@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -11,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { EyeIcon, EyeOffIcon, ShoppingBag, Mail, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { supabase } from '@/lib/supabase';
+import { supabase, auth } from '@/lib/supabase';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -56,7 +55,7 @@ const Login = () => {
     return 'User';
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validateForm()) {
@@ -67,43 +66,71 @@ const Login = () => {
     
     // Admin credentials for demo
     if (userRole === 'admin' || (email === 'admin@example.com' && password === 'admin123')) {
-      setTimeout(() => {
-        setIsLoading(false);
+      try {
+        // For demo purposes, we'll still use the mock login for admin
         localStorage.setItem('userRole', 'admin');
         localStorage.setItem('userName', 'Admin');
         toast.success('Welcome back, Admin!');
         navigate('/admin');
-      }, 1500);
+      } catch (error) {
+        console.error('Admin login error:', error);
+        toast.error('Failed to login. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
       return;
     }
     
     // Staff role
     if (userRole === 'staff') {
-      setTimeout(() => {
-        setIsLoading(false);
+      try {
+        // For demo purposes, we'll still use the mock login for staff
         localStorage.setItem('userRole', 'staff');
         localStorage.setItem('userName', 'Staff');
         toast.success('Welcome back, Staff member!');
         navigate('/staff');
-      }, 1500);
+      } catch (error) {
+        console.error('Staff login error:', error);
+        toast.error('Failed to login. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
       return;
     }
     
-    // Regular user login - User should be redirected to user dashboard or schedule page
-    if (email && password) {
-      setTimeout(() => {
-        setIsLoading(false);
+    // Regular user login with Supabase
+    try {
+      const { user, error } = await auth.signIn(email, password);
+      
+      if (error) throw error;
+      
+      if (user) {
+        // Store user data
         localStorage.setItem('userRole', 'user');
-        // Store userName as part before '@' in email, e.g. john for john@example.com
         const displayName = getUserNameFromEmail(email);
         localStorage.setItem('userName', displayName);
+        localStorage.setItem('userId', user.id);
+        
+        // Get user profile from database if exists
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+          
+        // Use profile name if available
+        if (profileData?.full_name) {
+          localStorage.setItem('userName', profileData.full_name);
+        }
+        
         toast.success('Successfully logged in!');
-        // Redirect user to the schedule page instead of dashboard
         navigate('/schedule');
-      }, 1500);
-    } else {
+      }
+    } catch (error: any) {
+      console.error('Login error:', error);
+      toast.error(error.message || 'Failed to login. Please check your credentials.');
+    } finally {
       setIsLoading(false);
-      toast.error('Please enter both email and password');
     }
   };
 
@@ -274,4 +301,3 @@ const Login = () => {
 };
 
 export default Login;
-

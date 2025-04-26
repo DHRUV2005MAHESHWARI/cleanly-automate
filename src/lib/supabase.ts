@@ -5,33 +5,42 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Create a dummy client when environment variables are missing
-// This prevents the app from crashing during development
-// and allows components to render without actual database connectivity
-let supabase;
+// Create a proper Supabase client
+export const supabase = createClient(
+  supabaseUrl || 'https://your-supabase-project-url.supabase.co',
+  supabaseAnonKey || 'your-anon-key'
+);
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Missing Supabase environment variables. Using mock client for development.');
+// Add authentication helpers
+export const auth = {
+  signIn: async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+    return { user: data.user, error };
+  },
   
-  // Create a mock Supabase client that returns empty data
-  // This allows the app to render without crashing
-  supabase = {
-    from: () => ({
-      select: () => ({ data: [], error: null }),
-      insert: () => ({ data: null, error: null }),
-      update: () => ({ data: null, error: null }),
-      delete: () => ({ data: null, error: null }),
-      eq: () => ({ data: [], error: null }),
-      order: () => ({ data: [], error: null }),
-    }),
-    auth: {
-      signIn: () => Promise.resolve({ user: null, error: null }),
-      signOut: () => Promise.resolve({ error: null }),
-    },
-  };
-} else {
-  // Create the actual Supabase client when environment variables are available
-  supabase = createClient(supabaseUrl, supabaseAnonKey);
-}
-
-export { supabase };
+  signUp: async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password
+    });
+    return { user: data.user, error };
+  },
+  
+  signOut: async () => {
+    const { error } = await supabase.auth.signOut();
+    return { error };
+  },
+  
+  getCurrentUser: async () => {
+    const { data, error } = await supabase.auth.getUser();
+    return { user: data.user, error };
+  },
+  
+  getSession: async () => {
+    const { data, error } = await supabase.auth.getSession();
+    return { session: data.session, error };
+  }
+};
